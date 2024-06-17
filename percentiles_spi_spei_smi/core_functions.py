@@ -22,7 +22,7 @@ def load_target_variable(target_variable, accumulation, period_list, bc=False, b
     - target_variable: string from ['var_p', 'var_sm', 'var_pet'] (variable to accumulate - NOTE function only tested for var_pr so far.)
     - accumulation: int from [1, 3, 6, 9, 12] (no. of months to accumulate)
     - period_list: list like ['full', 'recent', 'GWL1.2-ssp370', 'GWL1.5-ssp370', 'GWL2.0-ssp370', 'GWL3.0-ssp370'] (periods to load in, consult dictionaries.climatology for details)
-    - bc: True/False (switch to access bias-corrected data, true-> function will pull from ia39 otherwise py18 and hq89)
+    - bc: string from ['input', 'output', 'raw'] (switch to access bias-corrected data, input/output-> function will pull from ia39 otherwise py18 and hq89)
     - bc_method: string from ['QME', MRNBC'] (bias correction method - NOTE MRNBC is not live yet)
     - bc_source: string from ['AGCD', 'BARRA'] (bias correction source)
 
@@ -34,7 +34,7 @@ def load_target_variable(target_variable, accumulation, period_list, bc=False, b
     import glob
 
 
-    print('---> BC SWITCH ON: USING DATA FROM ia39' if bc==True else '---> BC SWITCH OFF: USING DATA FROM py18 AND hq89')
+    print('---> USING RAW DATA FROM py18 AND hq89' if bc=='raw' else '---> USING BC %s DATA FROM ia39' % (bc.upper()) )
     target_variable_dict = {}
     
     for period in period_list:
@@ -68,19 +68,7 @@ def load_target_variable(target_variable, accumulation, period_list, bc=False, b
                 # include one year before to allow accumulations up to 12 months - target period is still only on the defined years
                 climstart = dictionaries.climatology[period][model]['start'] if 'GWL' in period else dictionaries.climatology[period]['start']-1
                 climend = dictionaries.climatology[period][model]['end'] if 'GWL' in period else dictionaries.climatology[period]['end']
-                if bc:
-                    file_path_base = dictionaries.file_paths['bias-correction']
-                    files=[]
-                    cmip6_hist = file_path_base.format('BOM' if 'BARPA' in RCM else 'CSIRO',model,'historical',dictionaries.data_source['CMIP6'][model]['variant-id'], RCM, bc_method, bc_source, '1960' if bc_source == 'AGCD' else '1979', dictionaries.data_source['CMIP6'][target_variable])
-                    cmip6_ssp370 = file_path_base.format('BOM' if 'BARPA' in RCM else 'CSIRO',model,'ssp370',dictionaries.data_source['CMIP6'][model]['variant-id'], RCM, bc_method, bc_source, '1960' if bc_source == 'AGCD' else '1979', dictionaries.data_source['CMIP6'][target_variable])
-                    for i in range(climstart,climend+1):
-                        files.extend(sorted(glob.glob("{}/*{}1231.nc".format(cmip6_hist, i))))
-                        files.extend(sorted(glob.glob("{}/*{}1231.nc".format(cmip6_ssp370, i))))
-                    #bc files are of daily frequency - load in and resample to calendar month
-                    target_period = xr.open_mfdataset(files)[dictionaries.data_source['CMIP6'][target_variable]+'Adjust'].resample(time='ME').sum()
-                    # accumulate and write to dictionary
-                    target_variable_dict[period][RCM][model] = target_period.rolling(time=accumulation, center=False).sum().sel(time=slice(target_period.time[12], None))
-                else:
+                if bc == 'raw':
                     file_path_base = dictionaries.file_paths[RCM]
                     files=[]
                     cmip6_hist = file_path_base.format(model,'historical',dictionaries.data_source['CMIP6'][model]['variant-id'], dictionaries.data_source['CMIP6'][target_variable])
@@ -94,9 +82,30 @@ def load_target_variable(target_variable, accumulation, period_list, bc=False, b
                     target_period = target_period * 86400 * 30
                     # accumulate and write to dictionary
                     target_variable_dict[period][RCM][model] = target_period.rolling(time=accumulation, center=False).sum().sel(time=slice(target_period.time[12], None))
+                else:
+                    target_variable_key = dictionaries.data_source['CMIP6'][target_variable] if bc == 'input' else dictionaries.data_source['CMIP6'][target_variable]+'Adjust'
+                    file_path_base = dictionaries.file_paths['bias-correction']
+                    files=[]
+                    cmip6_hist = file_path_base.format(bc,\
+                                                       'BOM' if 'BARPA' in RCM else 'CSIRO',\
+                                                       model,\
+                                                       'historical',\
+                                                       dictionaries.data_source['CMIP6'][model]['variant-id'],\
+                                                       RCM,\
+                                                       'v1-r1' if bc == 'input' else 'v1-r1-ACS-{}-{}-{}-2022'.format(bc_method, bc_source, '1960' if bc_source == 'AGCD' else '1979'),
+                                                       target_variable_key)
+                    cmip6_ssp370 = cmip6_hist.replace('historical', 'ssp370')
+                    for i in range(climstart,climend+1):
+                        files.extend(sorted(glob.glob("{}/*{}".format(cmip6_hist, str(i)+'1231.nc' if bc == 'output' or RCM=='CCAM-v2203-SN' else str(i)+'12.nc'))))
+                        files.extend(sorted(glob.glob("{}/*{}".format(cmip6_ssp370, str(i)+'1231.nc' if bc == 'output' or RCM=='CCAM-v2203-SN' else str(i)+'12.nc'))))
+ 
+                    #bc files are of daily frequency - load in and resample to calendar month
+                    target_period = xr.open_mfdataset(files)[target_variable_key].resample(time='ME').sum()
+                    # accumulate and write to dictionary
+                    target_variable_dict[period][RCM][model] = target_period.rolling(time=accumulation, center=False).sum().sel(time=slice(target_period.time[12], None))
+                    
 
     return target_variable_dict
-
 
 def calculate_spi(target_period, base_period, accumulation, fitting_method):
     """

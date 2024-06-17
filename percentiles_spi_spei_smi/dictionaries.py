@@ -25,13 +25,16 @@ file_paths = {'AGCD': "/g/data/zv2/agcd/v2-0-1/precip/total/r005/01month",
               'ERA5': "/g/data/zz93/era5-land/reanalysis/{}/{}", #variable #year
               'BARPA-R': "/g/data/py18/BARPA/output/CMIP6/DD/AUS-15/BOM/{}/{}/{}/BARPA-R/v1-r1/mon/{}/v20231001", #model #hist/ssp #variantid #variable
               'CCAM-v2203-SN': "/g/data/hq89/CCAM/output/CMIP6/DD/AUS-10i/CSIRO/{}/{}/{}/CCAM-v2203-SN/v1-r1/mon/{}/v20231206", #model #hist/ssp #variantid #variable
-              'bias-correction': "/g/data/ia39/australian-climate-service/test-data/CORDEX-CMIP6/bias-adjustment-output/AGCD-05i/{}/{}/{}/{}/{}/v1-r1-ACS-{}-{}-{}-2022/day/{}Adjust" #BOM/CSIRO #model #hist/ssp #variantid #RCM #BC_method #BC_source #1960/AGCD_1979/BARRA #variable
+              'bias-correction': "/g/data/ia39/australian-climate-service/test-data/CORDEX-CMIP6/bias-adjustment-{}/AGCD-05i/{}/{}/{}/{}/{}/{}/day/{}" #output/input #BOM/CSIRO #model #hist/ssp #variantid #RCM #BCdetails #variable
              }
+
+
 '''
 Dictionary that contains the start and end year for the different time periods. Populated using get_GWL_syear_eyear function.
 '''
 climatology = {'full':{'start':1960,'end':2100},
                'recent':{'start':1991,'end':2020},
+               'static':{'start':1985,'end':2014},
                # 'current':{'start':2011,'end':2030},
                'GWL1.2-ssp370':{},
                'GWL1.5-ssp370':{},
