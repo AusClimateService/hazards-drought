@@ -4,7 +4,7 @@
 GitHub repository for ACS Hazard Team on Drought and Chnages in Aridity to store, track and develop code. 
 
 ## Roadmap
-<Coming soon>
+Coming soon..
 
 ## Contributing
 Open to contributions. 
