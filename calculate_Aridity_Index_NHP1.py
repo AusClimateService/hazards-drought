@@ -21,7 +21,8 @@ warnings.filterwarnings('ignore')
 def calc_AI(pr_file,e0_file,syear,eyear):
     # Open data since it's a single file and resample annually
     da_e0 = xr.open_mfdataset(e0_file).resample(time='Y').sum('time')
-    da_pr  = xr.open_mfdataset(pr_file).resample(time='Y').sum('time')
+    da_pr_raw = xr.open_mfdataset(infile_pr)*86400
+    da_pr = da_pr_raw.resample(time='Y').sum('time')
 
     # Select GWL periods
     e0 = da_e0.sel(time=slice(syear,eyear))['e0'].chunk({'time':-1,'lat':'auto','lon':'auto'})
