@@ -32,7 +32,7 @@ In terms of the colors:
 | SPI |:yellow_circle:<br>:red_circle:<br>:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|deliverable for 30 June<br>deliverable for 31 July<br>N/A|
 | SPI 'time spent in drought' |:yellow_circle:<br>:red_circle:<br>:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|deliverable for 30 June<br>deliverable for 31 July<br>N/A|
 | Rainfall 15th prctl |:white_circle:|:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|deliverable for 30 June<br>deliverable for 31 July<br>N/A|
-| AI |:white_circle:<br>:white_circle:<br>:yellow_circle:|:white_circle:<br>:white_circle:<br>:yellow_circle:|:white_circle:<br>:white_circle:<br>:yellow_circle:|:white_circle:<br>:white_circle:<br>:yellow_circle:|:white_circle:<br>:white_circle:<br>:yellow_circle:|N/A<br>N/A<br>deliverable for 31 July|
+| AI |:white_circle:<br>:white_circle:<br>:green_circle:|:white_circle:<br>:white_circle:<br>:green_circle:|:white_circle:<br>:white_circle:<br>:green_circle:|:white_circle:<br>:white_circle:<br>:yellow_circle:|:white_circle:<br>:white_circle:<br>:yellow_circle:|N/A<br>N/A<br>deliverable for 31 July|
 
 
 
