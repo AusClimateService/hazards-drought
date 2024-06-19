@@ -82,19 +82,19 @@ def main(inargs):
             print('========= '+RCM+'_'+model+' =========')
             bc_string = '_ACS-{}-{}-{}-{}.nc'.format(inargs.bcMethod, inargs.bcSource, '1960' if inargs.bcSource == 'AGCD' else '1979', '2022')
             variant_id = utils.data_source['CMIP6'][model]['variant-id']
-            file_name = "/scratch/mn51/jb6465/p-{}_{}-month_{}_{}_{}_{}_{}_{}_{}{}".format(inargs.percentileThreshold, inargs.spiAccumulation,'AGCD-05i',model,'ssp370',variant_id,'BOM' if RCM == 'BARPA-R' else 'CSIRO','v1-r1', inargs.GWL,'.nc' if inargs.bc == 'input' else bc_string)
+            file_name = "/scratch/mn51/jb6465/p{}_{}month_{}_{}_{}_{}_{}_{}_GWL{}{}".format(inargs.percentileThreshold, inargs.Accumulation,'AGCD-05i',model,'ssp370',variant_id,'BOM' if RCM == 'BARPA-R' else 'CSIRO','v1-r1', inargs.GWL,'.nc' if inargs.bc == 'input' else bc_string)
             
             if os.path.exists(file_name)==False:
                 print("Computing {name}...".format(name=file_name))
     
                 # Group by month and apply the SPI calculation
-                input_array = utils.load_target_variable('var_p', RCM, model, inargs.spiAccumulation, bc=inargs.bc, bc_method=inargs.bcMethod, bc_source=inargs.bcSource)
+                input_array = utils.load_target_variable('var_p', RCM, model, inargs.Accumulation, bc=inargs.bc, bc_method=inargs.bcMethod, bc_source=inargs.bcSource)
                 
                 input_array = get_GWL_timeslice(input_array,'CMIP6',model,variant_id,'ssp370',inargs.GWL)
                 input_array = input_array.astype(np.float32).chunk({'time':-1})
                 ds_perc = input_array.groupby('time.month').map(lambda x: compute_percentile(x, inargs.percentileThreshold))
                 
-                ds_perc = ds_perc.rename('p{}_{}month'.format(inargs.percentileThreshold, inargs.spiAccumulation))
+                ds_perc = ds_perc.rename('p{}_{}month'.format(inargs.percentileThreshold, inargs.Accumulation))
 
                 ds_perc.attrs['description'] = f'Rainfall percentile threshold calculated for each GWL base period. Further details in supporting technical documentation.'
                 ds_perc.attrs['created'] = (datetime.now()).strftime("%d/%m/%Y %H:%M:%S")    
