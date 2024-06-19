@@ -20,13 +20,14 @@ warnings.filterwarnings('ignore')
 #################< Functions ########################
 def calc_AI(pr_file,e0_file,syear,eyear):
     # Open data since it's a single file and resample annually
-    da_e0 = xr.open_mfdataset(e0_file).resample(time='Y').sum('time')
-    da_pr_raw = xr.open_mfdataset(infile_pr)*86400
-    da_pr = da_pr_raw.resample(time='Y').sum('time')
+    da_e0_raw = xr.open_mfdataset(e0_file)['e0']
+    da_e0 = da_e0_raw.resample(time='YE').sum('time')
+    da_pr_raw = xr.open_mfdataset(pr_file)['pr']
+    da_pr = (da_pr_raw*86400).resample(time='YE').sum('time')
 
     # Select GWL periods
-    e0 = da_e0.sel(time=slice(syear,eyear))['e0'].chunk({'time':-1,'lat':'auto','lon':'auto'})
-    pr = da_pr.sel(time=slice(syear,eyear))['pr'].chunk({'time':-1,'lat':'auto','lon':'auto'})
+    e0 = da_e0.sel(time=slice(syear,eyear)).chunk({'time':-1,'lat':'auto','lon':'auto'})
+    pr = da_pr.sel(time=slice(syear,eyear)).chunk({'time':-1,'lat':'auto','lon':'auto'})
 
     #Compute AI
     computed_AI = (pr/e0).astype("float32").rename("AI")
