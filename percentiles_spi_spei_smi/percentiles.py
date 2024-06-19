@@ -92,7 +92,7 @@ def main(inargs):
                 
                 input_array = get_GWL_timeslice(input_array,'CMIP6',model,variant_id,'ssp370',inargs.GWL)
                 input_array = input_array.astype(np.float32).chunk({'time':-1})
-                ds_perc = input_array.groupby('time.month').map(lambda x: compute_percentile(x, 15))
+                ds_perc = input_array.groupby('time.month').map(lambda x: compute_percentile(x, inargs.percentileThreshold))
                 
                 ds_perc = ds_perc.rename('p{}_{}month'.format(inargs.percentileThreshold, inargs.spiAccumulation))
 
