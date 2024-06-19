@@ -96,8 +96,8 @@ def load_target_variable(target_variable, RCM, model, accumulation, bc=False, bc
                                             target_variable_key)
         cmip6_ssp370 = cmip6_hist.replace('historical', 'ssp370')
         for i in range(climstart,climend+1):
-            files.extend(sorted(glob.glob("{}/*{}".format(cmip6_hist, str(i)+'1231.nc' if bc == 'output' or RCM=='CCAM-v2203-SN' else str(i)+'12.nc'))))
-            files.extend(sorted(glob.glob("{}/*{}".format(cmip6_ssp370, str(i)+'1231.nc' if bc == 'output' or RCM=='CCAM-v2203-SN' else str(i)+'12.nc'))))
+            files.extend(sorted(glob.glob("{}/*{}".format(cmip6_hist, str(i)+'12.nc' if bc == 'raw' else str(i)+'1231.nc'))))
+            files.extend(sorted(glob.glob("{}/*{}".format(cmip6_ssp370, str(i)+'12.nc' if bc == 'raw' else str(i)+'1231.nc'))))
 
         #bc files are of daily frequency - load in and resample to calendar month
         target_period = xr.open_mfdataset(files)[target_variable_key].resample(time='ME').sum()
