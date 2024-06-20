@@ -27,12 +27,12 @@ In terms of the colors:
 - :red_circle: The data processing has not yet started
 - :white_circle: Not intended for delivery/not applicable
 
-| Index/metric | time series (ts) | GWLs ts | GWLs 2D | MME 2D | MME 2D change | (Notes) |
-|-----         | :-:              |:-:      |:-:      |:-:     |:-:            |-----    |
-| SPI |:yellow_circle:<br>:red_circle:<br>:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|deliverable for 30 June<br>deliverable for 31 July<br>N/A|
-| SPI 'time spent in drought' |:yellow_circle:<br>:red_circle:<br>:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|deliverable for 30 June<br>deliverable for 31 July<br>N/A|
-| Rainfall 15th prctl |:white_circle:|:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|deliverable for 30 June<br>deliverable for 31 July<br>N/A|
-| AI |:white_circle:<br>:white_circle:<br>:green_circle:|:white_circle:<br>:white_circle:<br>:green_circle:|:white_circle:<br>:white_circle:<br>:green_circle:|:white_circle:<br>:white_circle:<br>:yellow_circle:|:white_circle:<br>:white_circle:<br>:yellow_circle:|N/A<br>N/A<br>deliverable for 31 July|
+| Index/metric | time series (ts) | GWLs ts | GWLs 2D | MME 2D | MME 2D change | (Notes) | Data location | Last update
+|-----         | :-:              |:-:      |:-:      |:-:     |:-:            |-----    |-----          |-----
+| SPI |:yellow_circle:<br>:red_circle:<br>:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|deliverable for 30 June<br>deliverable for 31 July<br>N/A|/g/data/ia39/ncra/ drought_aridity/spi/|20/06/24
+| SPI 'time spent in drought' |:yellow_circle:<br>:red_circle:<br>:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|deliverable for 30 June<br>deliverable for 31 July<br>N/A|/g/data/ia39/ncra/ drought_aridity/spi/|20/06/24
+| Rainfall 15th prctl |:white_circle:|:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|:yellow_circle:<br>:red_circle:<br>:white_circle:|deliverable for 30 June<br>deliverable for 31 July<br>N/A|/g/data/ia39/ncra/ drought_aridity/ rainfall_percentiles/|20/06/24
+| AI |:white_circle:<br>:white_circle:<br>:green_circle:|:white_circle:<br>:white_circle:<br>:green_circle:|:white_circle:<br>:white_circle:<br>:green_circle:|:white_circle:<br>:white_circle:<br>:yellow_circle:|:white_circle:<br>:white_circle:<br>:yellow_circle:|N/A<br>N/A<br>deliverable for 31 July|/g/data/ia39/ncra/ drought_aridity/ai/|20/06/24
 
 
 
