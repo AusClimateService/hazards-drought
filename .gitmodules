@@ -1,0 +1,3 @@
+[submodule "submodules/gwls"]
+	path = submodules/gwls
+	url = git@github.com:AusClimateService/gwls.git
