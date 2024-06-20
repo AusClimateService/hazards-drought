@@ -40,7 +40,7 @@ warnings.filterwarnings('ignore')
 logging.getLogger("distributed.worker.memory").setLevel(logging.ERROR)
 
 def compute_percentile(base_period, percentile_threshold):
-    
+    """Compute percentiles across the time access"""
     percentile_array = base_period.quantile(percentile_threshold/100, dim='time')
 
     return percentile_array
@@ -53,6 +53,16 @@ def get_git_hash():
     git_hash = git.Repo(git_root).heads[0].commit
     git_text = " (Git hash: %s)" %(str(git_hash)[0:7])
     return git_text
+
+def transform_months(accumulation_months):
+    months = ['J', 'F', 'M', 'A', 'M', 'J', 'J', 'A', 'S', 'O', 'N', 'D']
+    transformed_months = []
+    adjusted_months = months[-(accumulation_months - 1):] + months
+    # Create the transformed list
+    for i in range(len(months)):
+        transformed_months.append(''.join(adjusted_months[i:i + accumulation_months]))
+    
+    return np.array(transformed_months)
 
 ################< Main ###############################
 
@@ -68,7 +78,7 @@ def main(inargs):
         'distributed.scheduler.allowed-failures': 20,
         "distributed.scheduler.worker-saturation": 1.1, #This should use the new behaviour which helps with memory pile up
         })
-    client = Client(n_workers=10, threads_per_worker=1, local_directory = tempfile.mkdtemp(), memory_limit = "63000mb", dashboard_address=":8787") #need to make this dynamic depending on cpus/memory requested
+    client = Client(n_workers=inargs.nworkers, threads_per_worker=1, local_directory = tempfile.mkdtemp(), memory_limit = "63000mb", dashboard_address=":8787") #need to make this dynamic depending on cpus/memory requested
     print("Dask dashboard is available at:", client.dashboard_link)
 
     
@@ -93,8 +103,7 @@ def main(inargs):
                 input_array = get_GWL_timeslice(input_array,'CMIP6',model,variant_id,'ssp370',inargs.GWL)
                 input_array = input_array.astype(np.float32).chunk({'time':-1})
                 ds_perc = input_array.groupby('time.month').map(lambda x: compute_percentile(x, inargs.percentileThreshold))
-                
-                ds_perc = ds_perc.rename('p{}_{}month'.format(inargs.percentileThreshold, inargs.Accumulation))
+                ds_perc = ds_perc.rename('p{}_{}month'.format(inargs.percentileThreshold, inargs.Accumulation)).assign_coords(month=("month", transform_months(inargs.Accumulation)))
 
                 ds_perc.attrs['description'] = f'Rainfall percentile threshold calculated for each GWL base period. Further details in supporting technical documentation.'
                 ds_perc.attrs['created'] = (datetime.now()).strftime("%d/%m/%Y %H:%M:%S")    
@@ -134,8 +143,6 @@ author:
     parser.add_argument("--bcMethod", type=str, default='QME', choices=['QME', 'MRNBE'], help="Choose either 'MRNBC', 'QME'. Default is 'QME'")
     parser.add_argument("--percentileThreshold", type=int, default=15, help="Specify rainfall percentile threshold. Default is 15 as it corresponds to SPI=-1.")
     parser.add_argument("--Accumulation", type=int, default=3, help="Choose accumulation i.e. 1-month, 3-months, 6-months, etc. Default is 3")
-    parser.add_argument("--basePeriodStart", type=int, default=1965, help="Specify start year for base period. Minimum 30 years advised. 50 years helps avoid NaN errors on upper tails. Default = 1965.")
-    parser.add_argument("--basePeriodEnd", type=int, default=2014, help="Specify end year for base period. Minimum 30 years advised. 50 years helps avoid NaN errors on upper tails. Default = 2014")
     parser.add_argument("--outputDir", type=str, default='/g/data/mn51/projects/work_package_4/climate_hazard_indices/drought/', help="Output directory on Gadi. Default is'/g/data/mn51/projects/work_package_4/climate_hazard_indices/drought/'")
     parser.add_argument("--nworkers", type=int, default=10, help="Number of workers in dask distributed client.")
 
