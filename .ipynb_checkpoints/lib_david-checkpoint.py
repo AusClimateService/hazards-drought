@@ -33,7 +33,7 @@ def get_file_paths(root_directory, file_extension,include=None,exclude=None):
                 if include:
                     if all(term in filename for term in include):
                         if exclude:
-                            if any (term not in filename for term in exclude):
+                            if all (term not in filename for term in exclude):
                                 file_paths.append(file_path)
                         else:
                             file_paths.append(file_path)

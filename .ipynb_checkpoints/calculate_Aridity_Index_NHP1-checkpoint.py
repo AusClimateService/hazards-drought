@@ -9,7 +9,6 @@ import tempfile
 from dask.diagnostics import ProgressBar
 import lib_david
 import pickle
-from datetime import datetime
 import argparse
 import os
 import sys
@@ -21,15 +20,17 @@ warnings.filterwarnings('ignore')
 #################< Functions ########################
 def calc_AI(pr_file,e0_file,syear,eyear):
     # Open data since it's a single file and resample annually
-    da_e0 = xr.open_mfdataset(e0_file).resample(time='YE').sum('time')
-    da_pr  = xr.open_mfdataset(pr_file).resample(time='YE').sum('time')
+    da_e0_raw = xr.open_mfdataset(e0_file)['e0']
+    da_e0 = da_e0_raw.resample(time='YE').sum('time')
+    da_pr_raw = xr.open_mfdataset(pr_file)['pr']
+    da_pr = (da_pr_raw*86400).resample(time='YE').sum('time')
 
     # Select GWL periods
-    e0 = da_e0.sel(time=slice(syear,eyear))['e0'].chunk({'time':-1,'lat':'auto','lon':'auto'})
-    pr = da_pr.sel(time=slice(syear,eyear))['pr'].chunk({'time':-1,'lat':'auto','lon':'auto'})
+    e0 = da_e0.sel(time=slice(syear,eyear)).chunk({'time':-1,'lat':'auto','lon':'auto'})
+    pr = da_pr.sel(time=slice(syear,eyear)).chunk({'time':-1,'lat':'auto','lon':'auto'})
 
     #Compute AI
-    computed_AI = (pr/e0).mean('time').astype("float32").rename("AI")
+    computed_AI = (pr/e0).astype("float32").rename("AI")
         
     # add attributes
     computed_AI.attrs['units']         = ''
@@ -97,36 +98,76 @@ def main(inargs):
             for bc in bc_method:
                 infile_e0 = [filename_e0 for filename_e0 in files_e0 if bc in filename_e0]
                 infile_pr = [filename_pr for filename_pr in files_pr if bc in filename_pr]
+                run = infile_e0[0].split('/')[11]
                 print(bc)
+                    
+                ###############################  Compute annual time series ############################################
+                file_name_ann = "{}/AI-{}_NHP1-AUS-5_{}_{}_{}_{}_{}_{}.nc".format(inargs.OutputDir,inargs.index,model,rcp,run,bc,'annual','2006-2099')
+
+                if os.path.exists(file_name_ann)==False:
+                    ds_AI_ann = calc_AI(infile_pr,infile_e0,'2006','2099')
     
+                    ds_AI_ann.attrs['description'] = f'Ratio of precipitation to (potential)evepotranspiration produced from National Hydrological Projections (NHP1.0) on /g/data/wj02/COMPLIANT_PUBLISHED/. Produced for ACS. '
+                    ds_AI_ann.attrs['method']  = 'Using  {} aridity: pr/{}'.format(inargs.index,var_e)
+                    ds_AI_ann.attrs['history'] = cmdprov.new_log(extra_notes=[get_git_hash()])
+                    ds_AI_ann.attrs['comment'] = "Using data on /g/data/wj02/COMPLIANT_PUBLISHED/" ;
+                    ds_AI_ann.attrs['cell_methods'] = "time: mean" ;
+                    ds_AI_ann.attrs['bias correction'] = "method: {}".format(bc) ;
+                    print("Computing {name}...".format(name=file_name_ann))
+                        
+                    #< Save output
+                    saver_ann = ds_AI_ann.to_netcdf(file_name_ann,compute=False)
+                    future_ann = client.persist(saver_ann)
+                    dask.distributed.progress(future_ann)
+                    future_ann.compute()
+                else:
+                    print("{name} exists. Pass.".format(name=file_name_ann))
+                        
                 for gwl in models_gwl[model][rcp]:
                     print(gwl)
                     syear = str(models_gwl[model][rcp][gwl][0])
                     eyear = str(models_gwl[model][rcp][gwl][1])
-    
-                    file_name = "/scratch/mn51/dh4185/AI-{}_NHP10_{}_{}_{}_{}.nc".format(inargs.index,model,bc,rcp,gwl)
-    
-                    if os.path.exists(file_name)==False:
-    
-                        now = datetime.now() # get date and time
-    
-                        print("Computing {name}...".format(name=file_name))
-                        ds_AI = calc_AI(infile_pr,infile_e0,syear,eyear)
-    
-                        ds_AI.attrs['description'] = f'Ratio of precipitation to (potential)evepotranspiration produced from National Hydrological Projections (NHP1.0) on /g/data/wj02/COMPLIANT_PUBLISHED/. Produced for ACS. '
-                        ds_AI.attrs['method']  = 'Using  {} aridity: pr/{}'.format(inargs.index,var_e)
-                        ds_AI.attrs['created'] = now.strftime("%d/%m/%Y %H:%M:%S")    
-                        ds_AI.attrs['history'] = cmdprov.new_log(extra_notes=[get_git_hash()])
-                        ds_AI.attrs['comment'] = "Using data on /g/data/wj02/COMPLIANT_PUBLISHED/" ;
-                        ds_AI.attrs['cell_methods'] = "time: mean" ;
-                        
-                         #< Save output
-                        saver = ds_AI.to_netcdf(file_name,compute=False)
-                        future = client.persist(saver)
-                        dask.distributed.progress(future)
-                        future.compute()
+
+                    ###############################  Truncate to annual GWL time series IF previous file exists ############################################
+                    file_name_ann_gwl = "{}/AI-{}_NHP1-AUS-5_{}_{}_{}_{}_{}_{}.nc".format(inargs.OutputDir,inargs.index,model,rcp,run,bc,'annual','GWL'+str(int(float(gwl)*10))) 
+
+                    if os.path.exists(file_name_ann_gwl)==False:
+
+                        ds_AI_ann_gwl = xr.open_dataset(file_name_ann).sel(time=slice(syear,eyear))
+
+                        ds_AI_ann_gwl.attrs['description'] = f'Ratio of precipitation to (potential)evepotranspiration produced from National Hydrological Projections (NHP1.0) on /g/data/wj02/COMPLIANT_PUBLISHED/. Produced for ACS. '
+                        ds_AI_ann_gwl.attrs['method']  = 'Using  {} aridity: pr/{}'.format(inargs.index,var_e)
+                        ds_AI_ann_gwl.attrs['history'] = cmdprov.new_log(extra_notes=[get_git_hash()])
+                        ds_AI_ann_gwl.attrs['comment'] = "Using data on /g/data/wj02/COMPLIANT_PUBLISHED/" ;
+                        ds_AI_ann_gwl.attrs['cell_methods'] = "time: mean" ;
+                        print("Computing {name}...".format(name=file_name_ann_gwl))
+
+                        #< Save output
+                        ds_AI_ann_gwl.to_netcdf(file_name_ann_gwl)
+
                     else:
-                        print("{name} exists. Pass.".format(name=file_name))
+                        print("{name} exists. Pass.".format(name=file_name_ann_gwl))
+
+                    ###############################  Create 2D GWL IF time series file exists ############################################
+                    file_name_2D_gwl = "{}/AI-{}_NHP1-AUS-5_{}_{}_{}_{}_{}_{}.nc".format(inargs.OutputDir,inargs.index,model,rcp,run,bc,'2D','GWL'+str(int(float(gwl)*10)))
+
+                    if os.path.exists(file_name_2D_gwl)==False:
+                            
+                        ds_AI_2D_gwl = xr.open_dataset(file_name_ann).sel(time=slice(syear,eyear)).mean('time')
+
+                        ds_AI_2D_gwl.attrs['description'] = f'Ratio of precipitation to (potential)evepotranspiration produced from National Hydrological Projections (NHP1.0) on /g/data/wj02/COMPLIANT_PUBLISHED/. Produced for ACS. '
+                        ds_AI_2D_gwl.attrs['method']  = 'Using  {} aridity: pr/{}'.format(inargs.index,var_e)
+                        ds_AI_2D_gwl.attrs['history'] = cmdprov.new_log(extra_notes=[get_git_hash()])
+                        ds_AI_2D_gwl.attrs['comment'] = "Using data on /g/data/wj02/COMPLIANT_PUBLISHED/" ;
+                        ds_AI_2D_gwl.attrs['cell_methods'] = "time: mean" ;
+                        print("Computing {name}...".format(name=file_name_2D_gwl))
+
+                        #< Save output
+                        ds_AI_ann_gwl.to_netcdf(file_name_2D_gwl)
+                    else:
+                        print("{name} exists. Pass.".format(name=file_name_2D_gwl))
+
+
 
 
     #< Close the client
@@ -138,7 +179,7 @@ if __name__ == '__main__':
 author:
     David Hoffmann, david.hoffmann@bom.gov.au
     Created: 29/05/2024
-    Modified: --
+    Modified: 17/06/2024
 """
     description = """
     Calculate the aridity index from gridded National Hydrological Projections (NHP1.0) data from '/g/data/wj02/COMPLIANT_PUBLISHED/'.     
