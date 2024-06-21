@@ -129,7 +129,7 @@ def main(inargs):
                     eyear = str(models_gwl[model][rcp][gwl][1])
 
                     ###############################  Truncate to annual GWL time series IF previous file exists ############################################
-                    file_name_ann_gwl = "/scratch/mn51/dh4185/AI-{}_NHP1-AUS-5_{}_{}_{}_{}_{}_{}.nc".format(inargs.index,model,rcp,run,bc,'annual','GWL'+str(int(float(gwl)*10))) 
+                    file_name_ann_gwl = "{}/AI-{}_NHP1-AUS-5_{}_{}_{}_{}_{}_{}.nc".format(inargs.OutputDir,inargs.index,model,rcp,run,bc,'annual','GWL'+str(int(float(gwl)*10))) 
 
                     if os.path.exists(file_name_ann_gwl)==False:
 
@@ -149,7 +149,7 @@ def main(inargs):
                         print("{name} exists. Pass.".format(name=file_name_ann_gwl))
 
                     ###############################  Create 2D GWL IF time series file exists ############################################
-                    file_name_2D_gwl = "/scratch/mn51/dh4185/AI-{}_NHP1-AUS-5_{}_{}_{}_{}_{}_{}.nc".format(inargs.index,model,rcp,run,bc,'2D','GWL'+str(int(float(gwl)*10)))
+                    file_name_2D_gwl = "{}/AI-{}_NHP1-AUS-5_{}_{}_{}_{}_{}_{}.nc".format(inargs.OutputDir,inargs.index,model,rcp,run,bc,'2D','GWL'+str(int(float(gwl)*10)))
 
                     if os.path.exists(file_name_2D_gwl)==False:
                             
