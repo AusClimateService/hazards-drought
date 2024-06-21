@@ -58,7 +58,7 @@ def compute_spi(full_period, base_period_start_year, base_period_end_year):
     
     ### Apply gamma parameters from base period to gamma CDFs for full period accounting for zero observations
     p_zero = ((full_period == 0).sum(dim='time') / full_period.sizes['time']).values
-    gamma_cdf = gamma.cdf(full_period, alpha, loc=loc, scale=beta)
+    gamma_cdf = gamma.cdf(full_period, alpha, scale=beta)
     cdf = p_zero + (1 - p_zero) * gamma_cdf
     
     ### Apply inverse normal distribution
@@ -75,7 +75,7 @@ def get_git_hash():
     git_text = " (Git hash: %s)" %(str(git_hash)[0:7])
     return git_text
 
-################< Main ###############################
+################ Main ###############################
 
 def main(inargs):
     """Calculate the Standardised Precipitation Index"""
@@ -89,7 +89,7 @@ def main(inargs):
         'distributed.scheduler.allowed-failures': 20,
         "distributed.scheduler.worker-saturation": 1.1, #This should use the new behaviour which helps with memory pile up
         })
-    client = Client(n_workers=10, threads_per_worker=1, local_directory = tempfile.mkdtemp(), memory_limit = "63000mb", dashboard_address=":8787") #need to make this dynamic depending on cpus/memory requested
+    client = Client(n_workers=inargs.nworkers, threads_per_worker=1, local_directory = tempfile.mkdtemp(), memory_limit = "63000mb", dashboard_address=":8787") #need to make this dynamic depending on cpus/memory requested
     print("Dask dashboard is available at:", client.dashboard_link)
 
     
@@ -101,9 +101,9 @@ def main(inargs):
         
         for model in model_list:
             print('========= '+RCM+'_'+model+' =========')
-            bc_string = '_ACS-{}-{}-{}-{}.nc'.format(inargs.bcMethod, inargs.bcSource, '1960' if inargs.bcSource == 'AGCD' else '1979', '2022')
+            bc_string = '_ACS-{}-{}-{}-{}.nc'.format(inargs.bcMethod, inargs.bcSource, '1960' if inargs.bcSource == 'AGCD' else '1979', '2022') if inargs.bc == 'output' else '.nc'
             variant_id = utils.data_source['CMIP6'][model]['variant-id']
-            file_name = "/scratch/mn51/jb6465/SPI{}_{}_{}_{}_{}_{}_{}{}".format(inargs.spiAccumulation,'AGCD-05i',model,'ssp370',variant_id,'BOM' if RCM == 'BARPA-R' else 'CSIRO','v1-r1','.nc' if inargs.bc == 'input' else bc_string)
+            file_name = "/scratch/mn51/jb6465/SPI{}_{}_{}_{}_{}_{}_{}{}".format(inargs.spiAccumulation,'AGCD-05i',model,'ssp370',variant_id,'BOM' if RCM == 'BARPA-R' else 'CSIRO','v1-r1','raw.nc' if inargs.bc == 'raw' else bc_string)
             
             if os.path.exists(file_name)==False:
                 print("Computing {name}...".format(name=file_name))
@@ -112,19 +112,21 @@ def main(inargs):
                 input_array = utils.load_target_variable('var_p', RCM, model, inargs.spiAccumulation, bc=inargs.bc, bc_method=inargs.bcMethod, bc_source=inargs.bcSource)
                 input_array = input_array.astype(np.float32).chunk({'time':-1})
                 spi_array_grouped = input_array.groupby('time.month').map(lambda x: compute_spi(x, inargs.basePeriodStart, inargs.basePeriodEnd))
-                
+                dask.distributed.progress(spi_array_grouped)
+
                 ds_SPI = spi_array_grouped.assign_coords(time=input_array['time'])
                 ds_SPI = ds_SPI.rename('SPI{}'.format(inargs.spiAccumulation))
 
                 ds_SPI.attrs['description'] = f'Standardised Precipitation Index computed using method of McKee et al. 1993 using a base period of 1965-2014. Further details in supporting technical documentation.'
                 ds_SPI.attrs['created'] = (datetime.now()).strftime("%d/%m/%Y %H:%M:%S")    
                 ds_SPI.attrs['history'] = cmdprov.new_log(extra_notes=[get_git_hash()])
-                               
+
+                # Specify compression options to avoid large file sizes
+                encoding = {var: {'zlib': True, 'complevel': 4} for var in ds_SPI.data_vars}
                 
-                #< Save output
-                saver = ds_SPI.to_netcdf(file_name,compute=False)
+                # Save output
+                saver = ds_SPI.to_netcdf(file_name, encoding=encoding, compute=False)
                 future = client.persist(saver)
-                dask.distributed.progress(future)
                 future.compute()
             else:
                 print("{name} exists. Pass.".format(name=file_name))
