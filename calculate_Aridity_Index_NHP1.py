@@ -192,7 +192,7 @@ author:
     parser.add_argument("--index", type=str, choices=['atmospheric-based','plant-based'], help="Choose either 'atmospheric-based' or 'plant-based' aridity index.")
     parser.add_argument("--GCM", nargs='+', type=str, choices=['ACCESS1-0','GFDL-ESM2M','MIROC5','CNRM-CM5'], default = ['ACCESS1-0','GFDL-ESM2M','MIROC5','CNRM-CM5'], help="Choose GCM: 'ACCESS1-0','GFDL-ESM2M','MIROC5','CNRM-CM5'. If none are selected, the default is all GCMs")
     parser.add_argument("--OutputDir", type=str, default='/g/data/ia39/ncra/drought_aridity/ai/', help="Output directory on Gadi. Default is'/g/data/mn51/projects/work_package_4/climate_hazard_indices/drought/'")
-    parser.add_argument("--nworkers", type=int, default=12, help="Number of workers in dask distributed client.")
+    parser.add_argument("--nworkers", type=int, default=15, help="Number of workers in dask distributed client.")
 
     args = parser.parse_args()
     main(args)
