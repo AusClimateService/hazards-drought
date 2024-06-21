@@ -102,7 +102,7 @@ def main(inargs):
                 print(bc)
                     
                 ###############################  Compute annual time series ############################################
-                file_name_ann = "/scratch/mn51/dh4185/AI-{}_NHP1-AUS-5_{}_{}_{}_{}_{}_{}.nc".format(inargs.index,model,rcp,run,bc,'annual','2006-2099')
+                file_name_ann = "{}/AI-{}_NHP1-AUS-5_{}_{}_{}_{}_{}_{}.nc".format(inargs.OutputDir,inargs.index,model,rcp,run,bc,'annual','2006-2099')
 
                 if os.path.exists(file_name_ann)==False:
                     ds_AI_ann = calc_AI(infile_pr,infile_e0,'2006','2099')
@@ -123,49 +123,49 @@ def main(inargs):
                 else:
                     print("{name} exists. Pass.".format(name=file_name_ann))
                         
-#                 for gwl in models_gwl[model][rcp]:
-#                     print(gwl)
-#                     syear = str(models_gwl[model][rcp][gwl][0])
-#                     eyear = str(models_gwl[model][rcp][gwl][1])
+                for gwl in models_gwl[model][rcp]:
+                    print(gwl)
+                    syear = str(models_gwl[model][rcp][gwl][0])
+                    eyear = str(models_gwl[model][rcp][gwl][1])
 
-#                     ###############################  Truncate to annual GWL time series IF previous file exists ############################################
-#                     file_name_ann_gwl = "/scratch/mn51/dh4185/AI-{}_NHP1-AUS-5_{}_{}_{}_{}_{}_{}.nc".format(inargs.index,model,rcp,run,bc,'annual','GWL'+str(int(float(gwl)*10))) 
+                    ###############################  Truncate to annual GWL time series IF previous file exists ############################################
+                    file_name_ann_gwl = "/scratch/mn51/dh4185/AI-{}_NHP1-AUS-5_{}_{}_{}_{}_{}_{}.nc".format(inargs.index,model,rcp,run,bc,'annual','GWL'+str(int(float(gwl)*10))) 
 
-#                     if os.path.exists(file_name_ann_gwl)==False:
+                    if os.path.exists(file_name_ann_gwl)==False:
 
-#                         ds_AI_ann_gwl = xr.open_dataset(file_name_ann).sel(time=slice(syear,eyear))
+                        ds_AI_ann_gwl = xr.open_dataset(file_name_ann).sel(time=slice(syear,eyear))
 
-#                         ds_AI_ann_gwl.attrs['description'] = f'Ratio of precipitation to (potential)evepotranspiration produced from National Hydrological Projections (NHP1.0) on /g/data/wj02/COMPLIANT_PUBLISHED/. Produced for ACS. '
-#                         ds_AI_ann_gwl.attrs['method']  = 'Using  {} aridity: pr/{}'.format(inargs.index,var_e)
-#                         ds_AI_ann_gwl.attrs['history'] = cmdprov.new_log(extra_notes=[get_git_hash()])
-#                         ds_AI_ann_gwl.attrs['comment'] = "Using data on /g/data/wj02/COMPLIANT_PUBLISHED/" ;
-#                         ds_AI_ann_gwl.attrs['cell_methods'] = "time: mean" ;
-#                         print("Computing {name}...".format(name=file_name_ann_gwl))
+                        ds_AI_ann_gwl.attrs['description'] = f'Ratio of precipitation to (potential)evepotranspiration produced from National Hydrological Projections (NHP1.0) on /g/data/wj02/COMPLIANT_PUBLISHED/. Produced for ACS. '
+                        ds_AI_ann_gwl.attrs['method']  = 'Using  {} aridity: pr/{}'.format(inargs.index,var_e)
+                        ds_AI_ann_gwl.attrs['history'] = cmdprov.new_log(extra_notes=[get_git_hash()])
+                        ds_AI_ann_gwl.attrs['comment'] = "Using data on /g/data/wj02/COMPLIANT_PUBLISHED/" ;
+                        ds_AI_ann_gwl.attrs['cell_methods'] = "time: mean" ;
+                        print("Computing {name}...".format(name=file_name_ann_gwl))
 
-#                         #< Save output
-#                         ds_AI_ann_gwl.to_netcdf(file_name_ann_gwl)
+                        #< Save output
+                        ds_AI_ann_gwl.to_netcdf(file_name_ann_gwl)
 
-#                     else:
-#                         print("{name} exists. Pass.".format(name=file_name_ann_gwl))
+                    else:
+                        print("{name} exists. Pass.".format(name=file_name_ann_gwl))
 
-#                     ###############################  Create 2D GWL IF time series file exists ############################################
-#                     file_name_2D_gwl = "/scratch/mn51/dh4185/AI-{}_NHP1-AUS-5_{}_{}_{}_{}_{}_{}.nc".format(inargs.index,model,rcp,run,bc,'2D','GWL'+str(int(float(gwl)*10)))
+                    ###############################  Create 2D GWL IF time series file exists ############################################
+                    file_name_2D_gwl = "/scratch/mn51/dh4185/AI-{}_NHP1-AUS-5_{}_{}_{}_{}_{}_{}.nc".format(inargs.index,model,rcp,run,bc,'2D','GWL'+str(int(float(gwl)*10)))
 
-#                     if os.path.exists(file_name_2D_gwl)==False:
+                    if os.path.exists(file_name_2D_gwl)==False:
                             
-#                         ds_AI_2D_gwl = xr.open_dataset(file_name_ann).sel(time=slice(syear,eyear)).mean('time')
+                        ds_AI_2D_gwl = xr.open_dataset(file_name_ann).sel(time=slice(syear,eyear)).mean('time')
 
-#                         ds_AI_2D_gwl.attrs['description'] = f'Ratio of precipitation to (potential)evepotranspiration produced from National Hydrological Projections (NHP1.0) on /g/data/wj02/COMPLIANT_PUBLISHED/. Produced for ACS. '
-#                         ds_AI_2D_gwl.attrs['method']  = 'Using  {} aridity: pr/{}'.format(inargs.index,var_e)
-#                         ds_AI_2D_gwl.attrs['history'] = cmdprov.new_log(extra_notes=[get_git_hash()])
-#                         ds_AI_2D_gwl.attrs['comment'] = "Using data on /g/data/wj02/COMPLIANT_PUBLISHED/" ;
-#                         ds_AI_2D_gwl.attrs['cell_methods'] = "time: mean" ;
-#                         print("Computing {name}...".format(name=file_name_2D_gwl))
+                        ds_AI_2D_gwl.attrs['description'] = f'Ratio of precipitation to (potential)evepotranspiration produced from National Hydrological Projections (NHP1.0) on /g/data/wj02/COMPLIANT_PUBLISHED/. Produced for ACS. '
+                        ds_AI_2D_gwl.attrs['method']  = 'Using  {} aridity: pr/{}'.format(inargs.index,var_e)
+                        ds_AI_2D_gwl.attrs['history'] = cmdprov.new_log(extra_notes=[get_git_hash()])
+                        ds_AI_2D_gwl.attrs['comment'] = "Using data on /g/data/wj02/COMPLIANT_PUBLISHED/" ;
+                        ds_AI_2D_gwl.attrs['cell_methods'] = "time: mean" ;
+                        print("Computing {name}...".format(name=file_name_2D_gwl))
 
-#                         #< Save output
-#                         ds_AI_ann_gwl.to_netcdf(file_name_2D_gwl)
-#                     else:
-#                         print("{name} exists. Pass.".format(name=file_name_2D_gwl))
+                        #< Save output
+                        ds_AI_ann_gwl.to_netcdf(file_name_2D_gwl)
+                    else:
+                        print("{name} exists. Pass.".format(name=file_name_2D_gwl))
 
 
 
@@ -191,7 +191,7 @@ author:
                                      
     parser.add_argument("--index", type=str, choices=['atmospheric-based','plant-based'], help="Choose either 'atmospheric-based' or 'plant-based' aridity index.")
     parser.add_argument("--GCM", nargs='+', type=str, choices=['ACCESS1-0','GFDL-ESM2M','MIROC5','CNRM-CM5'], default = ['ACCESS1-0','GFDL-ESM2M','MIROC5','CNRM-CM5'], help="Choose GCM: 'ACCESS1-0','GFDL-ESM2M','MIROC5','CNRM-CM5'. If none are selected, the default is all GCMs")
-    parser.add_argument("--OutputDir", type=str, default='/g/data/mn51/projects/work_package_4/climate_hazard_indices/drought/', help="Output directory on Gadi. Default is'/g/data/mn51/projects/work_package_4/climate_hazard_indices/drought/'")
+    parser.add_argument("--OutputDir", type=str, default='/g/data/ia39/ncra/drought_aridity/ai/', help="Output directory on Gadi. Default is'/g/data/mn51/projects/work_package_4/climate_hazard_indices/drought/'")
     parser.add_argument("--nworkers", type=int, default=12, help="Number of workers in dask distributed client.")
 
     args = parser.parse_args()
