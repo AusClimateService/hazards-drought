@@ -1,3 +1,6 @@
 [submodule "submodules/gwls"]
 	path = submodules/gwls
 	url = git@github.com:AusClimateService/gwls.git
+[submodule "submodules/plotting_maps"]
+	path = submodules/plotting_maps
+	url = git@github.com:AusClimateService/plotting_maps.git

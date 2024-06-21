@@ -92,7 +92,7 @@ def main(inargs):
             print('========= '+RCM+'_'+model+' =========')
             bc_string = '_ACS-{}-{}-{}-{}.nc'.format(inargs.bcMethod, inargs.bcSource, '1960' if inargs.bcSource == 'AGCD' else '1979', '2022')
             variant_id = utils.data_source['CMIP6'][model]['variant-id']
-            file_name = "/scratch/mn51/jb6465/p{}_{}month_{}_{}_{}_{}_{}_{}_GWL{}{}".format(inargs.percentileThreshold, inargs.Accumulation,'AGCD-05i',model,'ssp370',variant_id,'BOM' if RCM == 'BARPA-R' else 'CSIRO','v1-r1', inargs.GWL,'.nc' if inargs.bc == 'input' else bc_string)
+            file_name = "{}/p{}_{}month_{}_{}_{}_{}_{}_{}_GWL{}{}".format(inargs.outputDir, inargs.percentileThreshold, inargs.Accumulation,'AGCD-05i',model,'ssp370',variant_id,'BOM' if RCM == 'BARPA-R' else 'CSIRO','v1-r1', inargs.GWL,'.nc' if inargs.bc == 'input' else bc_string)
             
             if os.path.exists(file_name)==False:
                 print("Computing {name}...".format(name=file_name))
@@ -143,7 +143,7 @@ author:
     parser.add_argument("--bcMethod", type=str, default='QME', choices=['QME', 'MRNBE'], help="Choose either 'MRNBC', 'QME'. Default is 'QME'")
     parser.add_argument("--percentileThreshold", type=int, default=15, help="Specify rainfall percentile threshold. Default is 15 as it corresponds to SPI=-1.")
     parser.add_argument("--Accumulation", type=int, default=3, help="Choose accumulation i.e. 1-month, 3-months, 6-months, etc. Default is 3")
-    parser.add_argument("--outputDir", type=str, default='/g/data/mn51/projects/work_package_4/climate_hazard_indices/drought/', help="Output directory on Gadi. Default is'/g/data/mn51/projects/work_package_4/climate_hazard_indices/drought/'")
+    parser.add_argument("--outputDir", type=str, default='/g/data/ia39/ncra/drought_aridity/rainfall_percentiles', help="Output directory on Gadi. Default is'/g/data/ia39/ncra/drought_aridity/rainfall_percentiles'")
     parser.add_argument("--nworkers", type=int, default=10, help="Number of workers in dask distributed client.")
 
     args = parser.parse_args()
