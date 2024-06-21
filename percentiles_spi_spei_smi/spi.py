@@ -37,6 +37,10 @@ warnings.filterwarnings('ignore')
 logging.getLogger("distributed.worker.memory").setLevel(logging.ERROR)
 
 def compute_spi(full_period, base_period_start_year, base_period_end_year):
+
+    import numpy as np
+    import xarray as xr
+    from scipy.stats import gamma, norm
     
     ### Gamma distribution requires non-zero values - assign random value to avoid NaN gamma fit errors
     base_period = full_period.sel(time=slice('%s-01-01' % (str(base_period_start_year)),\
@@ -92,44 +96,41 @@ def main(inargs):
     client = Client(n_workers=inargs.nworkers, threads_per_worker=1, local_directory = tempfile.mkdtemp(), memory_limit = "63000mb", dashboard_address=":8787") #need to make this dynamic depending on cpus/memory requested
     print("Dask dashboard is available at:", client.dashboard_link)
 
+    RCM = inargs.RCM
+    #MPI-ESM1-2-HR // NorESM2-MM for BARPA only and CNRM-ESM2-1 for CCAM only
+    model_list = ['CMCC-ESM2', 'ACCESS-ESM1-5', 'ACCESS-CM2', 'EC-Earth3', 'CESM2'] 
+    model_list = model_list + ['CNRM-ESM2-1'] if RCM == 'CCAM-v2203-SN' else model_list + ['MPI-ESM1-2-HR', 'NorESM2-MM']
     
-    # compute spi for each model
-    for RCM in ['BARPA-R', 'CCAM-v2203-SN']:
-        #MPI-ESM1-2-HR // NorESM2-MM for BARPA only and CNRM-ESM2-1 for CCAM only
-        model_list = ['CMCC-ESM2', 'ACCESS-ESM1-5', 'ACCESS-CM2', 'EC-Earth3', 'CESM2'] 
-        model_list = model_list + ['CNRM-ESM2-1'] if RCM == 'CCAM-v2203-SN' else model_list + ['MPI-ESM1-2-HR', 'NorESM2-MM']
+    # Compute SPI for each model
+    for model in model_list:
+        print('========= '+RCM+'_'+model+' =========')
+        bc_string = '_ACS-{}-{}-{}-{}.nc'.format(inargs.bcMethod, inargs.bcSource, '1960' if inargs.bcSource == 'AGCD' else '1979', '2022') if inargs.bc == 'output' else '.nc'
+        variant_id = utils.data_source['CMIP6'][model]['variant-id']
+        file_name = "/scratch/mn51/jb6465/SPI{}_{}_{}_{}_{}_{}_{}_{}{}".format(inargs.spiAccumulation,'AGCD-05i',model,'ssp370',variant_id,'BOM' if RCM == 'BARPA-R' else 'CSIRO','v1-r1','baseperiod'+(str(inargs.basePeriodStart)+str(inargs.basePeriodEnd)),'_raw.nc' if inargs.bc == 'raw' else bc_string)
         
-        for model in model_list:
-            print('========= '+RCM+'_'+model+' =========')
-            bc_string = '_ACS-{}-{}-{}-{}.nc'.format(inargs.bcMethod, inargs.bcSource, '1960' if inargs.bcSource == 'AGCD' else '1979', '2022') if inargs.bc == 'output' else '.nc'
-            variant_id = utils.data_source['CMIP6'][model]['variant-id']
-            file_name = "/scratch/mn51/jb6465/SPI{}_{}_{}_{}_{}_{}_{}{}".format(inargs.spiAccumulation,'AGCD-05i',model,'ssp370',variant_id,'BOM' if RCM == 'BARPA-R' else 'CSIRO','v1-r1','raw.nc' if inargs.bc == 'raw' else bc_string)
+        if os.path.exists(file_name)==False:
+            print("Computing {name}...".format(name=file_name))
+
+            # Group by month and apply the SPI calculation
+            input_array = utils.load_target_variable('var_p', RCM, model, inargs.spiAccumulation, bc=inargs.bc, bc_method=inargs.bcMethod, bc_source=inargs.bcSource)
+            input_array = input_array.astype(np.float32).chunk({'time':-1, 'lat':'auto', 'lon':'auto'})
+            spi_array_grouped = input_array.groupby('time.month').map(lambda x: compute_spi(x, inargs.basePeriodStart, inargs.basePeriodEnd))
             
-            if os.path.exists(file_name)==False:
-                print("Computing {name}...".format(name=file_name))
-    
-                # Group by month and apply the SPI calculation
-                input_array = utils.load_target_variable('var_p', RCM, model, inargs.spiAccumulation, bc=inargs.bc, bc_method=inargs.bcMethod, bc_source=inargs.bcSource)
-                input_array = input_array.astype(np.float32).chunk({'time':-1})
-                spi_array_grouped = input_array.groupby('time.month').map(lambda x: compute_spi(x, inargs.basePeriodStart, inargs.basePeriodEnd))
-                dask.distributed.progress(spi_array_grouped)
+            ds_SPI = spi_array_grouped.assign_coords(time=input_array['time'])
+            ds_SPI = ds_SPI.rename('SPI{}'.format(inargs.spiAccumulation))
 
-                ds_SPI = spi_array_grouped.assign_coords(time=input_array['time'])
-                ds_SPI = ds_SPI.rename('SPI{}'.format(inargs.spiAccumulation))
+            ds_SPI.attrs['description'] = "Standardised Precipitation Index computed using method of McKee et al. 1993 using a base period of {}-{}. Further details in supporting technical documentation.".format(inargs.basePeriodStart, inargs.basePeriodEnd)
+            ds_SPI.attrs['created'] = (datetime.now()).strftime("%d/%m/%Y %H:%M:%S")    
+            ds_SPI.attrs['history'] = cmdprov.new_log(extra_notes=[get_git_hash()])
 
-                ds_SPI.attrs['description'] = f'Standardised Precipitation Index computed using method of McKee et al. 1993 using a base period of 1965-2014. Further details in supporting technical documentation.'
-                ds_SPI.attrs['created'] = (datetime.now()).strftime("%d/%m/%Y %H:%M:%S")    
-                ds_SPI.attrs['history'] = cmdprov.new_log(extra_notes=[get_git_hash()])
-
-                # Specify compression options to avoid large file sizes
-                encoding = {var: {'zlib': True, 'complevel': 4} for var in ds_SPI.data_vars}
-                
-                # Save output
-                saver = ds_SPI.to_netcdf(file_name, encoding=encoding, compute=False)
-                future = client.persist(saver)
-                future.compute()
-            else:
-                print("{name} exists. Pass.".format(name=file_name))
+            # Specify compression options to avoid large file sizes
+            encoding = {'SPI{}'.format(inargs.spiAccumulation): {'zlib': True, 'complevel': 5, 'dtype':'float32'}}
+            
+            # Save output
+            ds_SPI.to_netcdf(file_name, encoding=encoding)
+            
+        else:
+            print("{name} exists. Pass.".format(name=file_name))
 
     #< Close the client
     client.close()
@@ -150,6 +151,7 @@ author:
                                      argument_default=argparse.SUPPRESS,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
                                      
+    parser.add_argument("--RCM", type=str, choices=['BARPA-R', 'CCAM-v2203-SN'], help="Choose RCM from ['BARPA-R', 'CCAM-v2203-SN']")
     parser.add_argument("--bc", type=str, choices=['raw','input','output'], help="Choose either 'raw' (py18/hq89 raw BARPA/CCAM), 'input' (ia39 bc input, 5km) or 'output' (ia39 bc output, 5km).")
     parser.add_argument("--bcSource", type=str, default='AGCD', choices=['AGCD', 'BARRA'], help="Choose either 'AGCD', 'BARRA'. Default is 'AGCD'")
     parser.add_argument("--bcMethod", type=str, default='QME', choices=['QME', 'MRNBE'], help="Choose either 'MRNBC', 'QME'. Default is 'QME'")
