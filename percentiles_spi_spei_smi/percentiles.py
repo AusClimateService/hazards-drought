@@ -143,7 +143,7 @@ author:
     parser.add_argument("--bcMethod", type=str, default='QME', choices=['QME', 'MRNBE'], help="Choose either 'MRNBC', 'QME'. Default is 'QME'")
     parser.add_argument("--percentileThreshold", type=int, default=15, help="Specify rainfall percentile threshold. Default is 15 as it corresponds to SPI=-1.")
     parser.add_argument("--Accumulation", type=int, default=3, help="Choose accumulation i.e. 1-month, 3-months, 6-months, etc. Default is 3")
-    parser.add_argument("--outputDir", type=str, default='/g/data/ia39/ncra/drought_aridity/spi', help="Output directory on Gadi. Default is'/g/data/ia39/ncra/drought_aridity/spi'")
+    parser.add_argument("--outputDir", type=str, default='/g/data/ia39/ncra/drought_aridity/rainfall_percentiles', help="Output directory on Gadi. Default is'/g/data/ia39/ncra/drought_aridity/rainfall_percentiles'")
     parser.add_argument("--nworkers", type=int, default=10, help="Number of workers in dask distributed client.")
 
     args = parser.parse_args()

@@ -158,7 +158,7 @@ author:
     parser.add_argument("--spiAccumulation", type=int, default=3, help="Choose SPI accumulation i.e. SPI-1, SPI-3, SPI-6, SPI-12. Default is 3")
     parser.add_argument("--basePeriodStart", type=int, default=1965, help="Specify start year for base period. Minimum 30 years advised. 50 years helps avoid NaN errors on upper tails. Default = 1965.")
     parser.add_argument("--basePeriodEnd", type=int, default=2014, help="Specify end year for base period. Minimum 30 years advised. 50 years helps avoid NaN errors on upper tails. Default = 2014")
-    parser.add_argument("--outputDir", type=str, default='/g/data/mn51/projects/work_package_4/climate_hazard_indices/drought/', help="Output directory on Gadi. Default is'/g/data/mn51/projects/work_package_4/climate_hazard_indices/drought/'")
+    parser.add_argument("--outputDir", type=str, default='/g/data/ia39/ncra/drought_aridity/spi', help="Output directory on Gadi. Default is'/g/data/ia39/ncra/drought_aridity/spi'")
     parser.add_argument("--nworkers", type=int, default=10, help="Number of workers in dask distributed client.")
 
     args = parser.parse_args()
