@@ -106,7 +106,7 @@ def main(inargs):
         print('========= '+RCM+'_'+model+' =========')
         bc_string = '_ACS-{}-{}-{}-{}.nc'.format(inargs.bcMethod, inargs.bcSource, '1960' if inargs.bcSource == 'AGCD' else '1979', '2022') if inargs.bc == 'output' else '.nc'
         variant_id = utils.data_source['CMIP6'][model]['variant-id']
-        file_name = "/scratch/mn51/jb6465/SPI{}_{}_{}_{}_{}_{}_{}_{}{}".format(inargs.spiAccumulation,'AGCD-05i',model,'ssp370',variant_id,'BOM' if RCM == 'BARPA-R' else 'CSIRO','v1-r1','baseperiod'+(str(inargs.basePeriodStart)+str(inargs.basePeriodEnd)),'_raw.nc' if inargs.bc == 'raw' else bc_string)
+        file_name = "{}/SPI{}_{}_{}_{}_{}_{}_{}_{}{}".format(inargs.outputDir, inargs.spiAccumulation,'AGCD-05i',model,'ssp370',variant_id,'BOM' if RCM == 'BARPA-R' else 'CSIRO','v1-r1','baseperiod'+(str(inargs.basePeriodStart)+str(inargs.basePeriodEnd)),'_raw.nc' if inargs.bc == 'raw' else bc_string)
         
         if os.path.exists(file_name)==False:
             print("Computing {name}...".format(name=file_name))

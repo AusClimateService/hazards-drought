@@ -25,7 +25,6 @@ from datetime import datetime
 import argparse
 import os
 import sys
-from scipy.stats import gamma, norm
 import dask.array as da
 import utils
 
@@ -67,7 +66,7 @@ def transform_months(accumulation_months):
 ################< Main ###############################
 
 def main(inargs):
-    """Calculate the Standardised Precipitation Index"""
+    """Calculate rainfall percentile thresholds """
     
     dask.config.set({
         'array.chunk-size': "256 MiB",
@@ -82,7 +81,7 @@ def main(inargs):
     print("Dask dashboard is available at:", client.dashboard_link)
 
     
-    # compute spi for each model
+    # compute rainfall percentiles for each model
     for RCM in ['BARPA-R', 'CCAM-v2203-SN']:
         #MPI-ESM1-2-HR // NorESM2-MM for BARPA only and CNRM-ESM2-1 for CCAM only
         model_list = ['CMCC-ESM2', 'ACCESS-ESM1-5', 'ACCESS-CM2', 'EC-Earth3', 'CESM2'] 
