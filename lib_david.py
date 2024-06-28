@@ -171,8 +171,8 @@ def plot_AI(data_dict,method,plot_title,plot_file=False,):
         num_cols = 1
         plt_width = 7
     else: 
-        num_cols = 2
-        plt_width = 5
+        num_cols = 3
+        plt_width = 4
         
     # Create subplots with two columns if more than two files to plot
     fig, axs = plt.subplots(nrows=num_rows, ncols=num_cols, figsize=(10, plt_width * num_rows), subplot_kw={'projection': ccrs.PlateCarree()}, sharex=True, sharey=True)
