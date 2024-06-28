@@ -51,6 +51,7 @@ In terms of the colors:
 | AI |:white_circle:<br>:white_circle:<br>:green_circle:|:white_circle:<br>:white_circle:<br>:green_circle:|:white_circle:<br>:white_circle:<br>:green_circle:|:white_circle:<br>:white_circle:<br>:green_circle:|:white_circle:<br>:white_circle:<br>:green_circle:|<ul><li>N/A</li><li>N/A</li><li>31 July</li></ul>|/g/data/ia39/ncra/<br>drought_aridity/ai/|28/06/24
 
 **Figures:** Figures for each 2D metric (SPI <= -1, AI, rainfall percentiles) and GWL as well as for changes relative to GWL 1.2 are located in the index directories (see data location in table above). Example figure for 'time spent in drought (SPI <= -1)' change for GWL 2.0 (rel. to GWL 1.2) for the 10th, 50th and 90th percentile of the multi-model ensemble:
+![Time spent in drought (SPI3 <= -1) change GWL 2 relative to GWL 1.2](figures/SPI3_change_GWL20_rel_to_GWL12.png)
 
 **Area statistics:** Figures for changes of each 2D metric (SPI <= -1, AI, rainfall percentiles) and GWL relative to GWL 1.2 are located in the index directories (see data location in table above).
 Example summary statistic for NCRA regions:
