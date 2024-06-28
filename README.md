@@ -57,6 +57,9 @@ In terms of the colors:
 Example summary statistic for NCRA regions:
 ![GWL2.0_to_GWL1.2_change_for_MME_50th_percentile](figures/area_stat_GWL2.0_to_GWL1.2_change_for_MME_50th_percentile.png)
 
+The data for the outputs specified in the columns was produced using this workflow:
+![Workflow](figures/workflow.png)
+
 ## References
 * Mckee, T.B., Doesken, N.J., Kleist, J. (1993). The relationship of drought frequency and duration to time scales. In: Proceedings of the 8th Conference on Applied Climatology. American Meteorological Society, Boston, MA, pp. 179–183.
 * United Nations Environment Programme (UNEP) (1992). World Atlas of Desertification. Edward Arnold. https://wedocs.unep.org/20.500.11822/42137
