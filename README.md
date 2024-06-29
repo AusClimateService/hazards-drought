@@ -2,7 +2,7 @@
 
 ## Description
 GitHub repository for ACS Hazard Team on Drought and Changes in Aridity to store, track and develop code.
-Last updated: 28 June 2024
+Last updated: 29 June 2024
 
 ## Indices considered by the hazard team:
 **Currently available:**
@@ -46,7 +46,7 @@ In terms of the colors:
 
 | Index/metric | time series (ts) | GWLs ts | GWLs 2D | MME 2D | MME 2D change | Scheduled<br>delivery date | Data<br>location | Last update
 |-----         | :-:              |:-:      |:-:      |:-:     |:-:            |------------    |-----             |-----
-| SPI3 |:green_circle:<br>:yellow_circle:<br>:white_circle:|:green_circle:<br>:yellow_circle:<br>:white_circle:|:green_circle:<br>:yellow_circle:<br>:white_circle:|:green_circle:<br>:yellow_circle:<br>:white_circle:|:green_circle:<br>:yellow_circle:<br>:white_circle:|<ul><li>30 June</li><li>31 July</li><li>N/A</li></ul>|/g/data/ia39/ncra/<br>drought_aridity/spi/|27/06/24
+| SPI3 |:green_circle:<br>:green_circle:<br>:white_circle:|:green_circle:<br>:green_circle:<br>:white_circle:|:green_circle:<br>:green_circle:<br>:white_circle:|:green_circle:<br>:green_circle:<br>:white_circle:|:green_circle:<br>:green_circle:<br>:white_circle:|<ul><li>30 June</li><li>31 July</li><li>N/A</li></ul>|/g/data/ia39/ncra/<br>drought_aridity/spi/|29/06/24
 | Rainfall 15th prctl |:white_circle:|:white_circle:|:green_circle:<br>:green_circle:<br>:white_circle:|:green_circle:<br>:green_circle:<br>:white_circle:|:green_circle:<br>:green_circle:<br>:white_circle:|<ul><li>30 June</li><li>31 July</li><li>N/A</li></ul>|/g/data/ia39/ncra/<br>drought_aridity/<br>rainfall_percentiles/|27/06/24
 | AI |:white_circle:<br>:white_circle:<br>:green_circle:|:white_circle:<br>:white_circle:<br>:green_circle:|:white_circle:<br>:white_circle:<br>:green_circle:|:white_circle:<br>:white_circle:<br>:green_circle:|:white_circle:<br>:white_circle:<br>:green_circle:|<ul><li>N/A</li><li>N/A</li><li>31 July</li></ul>|/g/data/ia39/ncra/<br>drought_aridity/ai/|28/06/24
 
