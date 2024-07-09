@@ -56,7 +56,7 @@ Figures for each 2D metric (SPI <= -1, AI, rainfall percentiles) and GWL as well
 
 ## Analysis for Climate Risk Overview:
 Some relevant findings for time spent in drought (SPI <= -1) and changes in aridity for Australia and different NCRA regions are listed below. 
-These findings are derived from datasets compiled using bias-corrected data. 
+These findings are derived from datasets compiled using bias-corrected data. These statements are qualitative in nature. Our team also provides quantiative analysis with some caveats.
 | NCRA region                  | Change in time spent in drought | Change in aridity |
 |:--                           | :--                             |:--                |
 |Australia                     | Considerable model spread, with only a few regions showing a consistent change signal. Median of multi-model spread indicates a general increase in time spent in drought. |   |
@@ -72,7 +72,7 @@ These findings are derived from datasets compiled using bias-corrected data.
 |Australian Antarctic Territory|N/A          |N/A|
 |Marine                        |N/A          |N/A|
 
-
+Quantitative summary: Please note significant caveats apply in averaging 10th, 50th and 90th percentile multi-model ensembles to a spatial region as the representative model for the change is different at each gridcell. Thus we have distilled our quantitative change analysis on a model by model basis for each region.
 
 ## FAQs
 
