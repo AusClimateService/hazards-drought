@@ -2,7 +2,7 @@
 
 GitHub repository for ACS Drought and Changes in Aridity hazard team to store, track and develop code, key outputs and relevant analysis. 
 
-Navigation: [Indices](https://github.com/AusClimateService/hazards-drought/tree/dev_readme?tab=readme-ov-file#indices) | [Product status](https://github.com/AusClimateService/hazards-drought/tree/dev_readme?tab=readme-ov-file#product-status) | [Key Figures](https://github.com/AusClimateService/hazards-drought/tree/dev_readme?tab=readme-ov-file#key-figures) | [Analysis for CRO](https://github.com/AusClimateService/hazards-drought/tree/dev_readme?tab=readme-ov-file#analysis-for-climate-risk-overview) | [Workflow](https://github.com/AusClimateService/hazards-drought/tree/dev_readme?tab=readme-ov-file#workflow) | [References](https://github.com/AusClimateService/hazards-drought/tree/dev_readme?tab=readme-ov-file#references) | [Team contacts](https://github.com/AusClimateService/hazards-drought/tree/dev_readme?tab=readme-ov-file#drought-hazard-team-contacts) <br>
+Navigation: [Indices](https://github.com/AusClimateService/hazards-drought/tree/dev_readme?tab=readme-ov-file#indices) | [Product status](https://github.com/AusClimateService/hazards-drought/tree/dev_readme?tab=readme-ov-file#product-status) | [Key Figures](https://github.com/AusClimateService/hazards-drought/tree/dev_readme?tab=readme-ov-file#key-figures) | [Analysis for CRO](https://github.com/AusClimateService/hazards-drought/tree/dev_readme?tab=readme-ov-file#analysis-for-climate-risk-overview) | [Workflow](https://github.com/AusClimateService/hazards-drought/tree/dev_readme?tab=readme-ov-file#workflow) | [FAQs](https://github.com/AusClimateService/hazards-drought/tree/dev_readme?tab=readme-ov-file#FAQs) | [References](https://github.com/AusClimateService/hazards-drought/tree/dev_readme?tab=readme-ov-file#references) | [Team contacts](https://github.com/AusClimateService/hazards-drought/tree/dev_readme?tab=readme-ov-file#drought-hazard-team-contacts) <br>
 Last updated: 09 July 2024
 ## Indices:
 ### Standardised Precipitation Index (SPI)
@@ -55,7 +55,25 @@ Figures for each 2D metric (SPI <= -1, AI, rainfall percentiles) and GWL as well
 
 
 ## Analysis for Climate Risk Overview:
-Some relevant findings for Australia and different NCRA regions are listed below. 
+Some relevant findings for time spent in drought (SPI <= -1) and changes in aridity for Australia and different NCRA regions are listed below. 
+| NCRA region                  | Change in time spent in drought | Change in aridity |
+|:--                           | :--                             |:--                |
+|Australia                     |              |                                         |
+|Western Australia North       |              |                                         |
+|Western Australia South       |              |                                         |
+|New South Wales and ACT       |              |                                         |
+|Victoria                      |              |                                         |
+|South Australia               |              |                                         |
+|Tasmania                      |              |                                         |
+|Northern Territory            |              |                                         |
+|Queensland North              |              |                                         |
+|Queensland South              |              |                                         |
+|Australian Antarctic Territory|              |                                         |
+|Marine                        |              |                                         |
+
+
+
+## FAQs
 
 ## Workflow
 The data for the outputs specified in the columns was produced using this workflow:
