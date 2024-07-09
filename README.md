@@ -56,20 +56,21 @@ Figures for each 2D metric (SPI <= -1, AI, rainfall percentiles) and GWL as well
 
 ## Analysis for Climate Risk Overview:
 Some relevant findings for time spent in drought (SPI <= -1) and changes in aridity for Australia and different NCRA regions are listed below. 
+These findings are derived from datasets compiled using bias-corrected data. 
 | NCRA region                  | Change in time spent in drought | Change in aridity |
 |:--                           | :--                             |:--                |
-|Australia                     |              |                                         |
-|Western Australia North       |              |                                         |
-|Western Australia South       |              |                                         |
-|New South Wales and ACT       |              |                                         |
-|Victoria                      |              |                                         |
-|South Australia               |              |                                         |
-|Tasmania                      |              |                                         |
-|Northern Territory            |              |                                         |
-|Queensland North              |              |                                         |
-|Queensland South              |              |                                         |
-|Australian Antarctic Territory|              |                                         |
-|Marine                        |              |                                         |
+|Australia                     | Considerable model spread, with only a few regions showing a consistent change signal. Median of multi-model spread indicates a general increase in time spent in drought. |   |
+|Western Australia North       | Considerable model spread, no consistent change signal. |   |
+|Western Australia South       | Consistent increase in time spent in drought for south-western WA, with the magnitude of change increasing with GWL. |   |
+|New South Wales and ACT       | Considerable model spread, no consistent change signal. However, median and 10th percentile of multi-model spread indicate a general decrease in time spent in drought for the eastern seaboard.  |   |
+|Victoria                      | Consistent increase in time spent in drought for south-western Victoria, with the magnitude of change increasing with GWL. |   |
+|South Australia               | Consistent increase in time spent in drought for southern most regions of SA, with the magnitude of change increasing with GWL.|   |
+|Tasmania                      | Considerable model spread, no consistent change signal. |   |
+|Northern Territory            | Considerable model spread, no consistent change signal. |   |
+|Queensland North              | Considerable model spread, no consistent change signal. |   |
+|Queensland South              | Considerable model spread, no consistent change signal. |   |
+|Australian Antarctic Territory|N/A          |N/A|
+|Marine                        |N/A          |N/A|
 
 
 
