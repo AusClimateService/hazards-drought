@@ -72,10 +72,11 @@ These findings are derived from datasets compiled using bias-corrected data. The
 |Australian Antarctic Territory|N/A          |N/A|
 |Marine                        |N/A          |N/A|
 
-Quantitative summary: Please note significant caveats apply in averaging 10th, 50th and 90th percentile multi-model ensembles to a spatial region as the representative model for the change is different at each gridcell. Thus we have distilled our quantitative change analysis on a model by model basis for each region.
-![image](https://github.com/AusClimateService/hazards-drought/assets/166585858/d93b7b7e-5420-4334-b900-c788eae7c96a)
-![image](https://github.com/AusClimateService/hazards-drought/assets/166585858/8620c743-c9ef-4520-8aad-ddb96d20b117)
-![image](https://github.com/AusClimateService/hazards-drought/assets/166585858/14838dfc-1683-423e-a21c-a127e1f13349)
+**Quantitative summary:** Please note significant caveats apply in averaging 10th, 50th and 90th percentile multi-model ensembles to a spatial region as the representative model for the change is different at each gridcell. Thus we have distilled our quantitative change analysis on a model by model basis for each region, regions where more than 70% of all our ensemble members agree on the sign of the projected change are indicated in bold. This analysis could also be useful in devising regional storylines depending on selection of driest/wettest model. For the representative climate future associated with each GCM in the ACS analysis bucket refer to Table 3 from [Grose et al., 2023](https://doi.org/10.1016/j.cliser.2023.100368). 
+
+![Regional changes for GWL 1.5](figures/SPI_regional_heatmap_change_GWL1.5.png)
+![Regional changes for GWL 2.0](figures/SPI_regional_heatmap_change_GWL2.0.png)
+![Regional changes for GWL 3.0](figures/SPI_regional_heatmap_change_GWL3.0.png)
 
 
 ## FAQs
