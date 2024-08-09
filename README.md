@@ -3,7 +3,7 @@
 GitHub repository for ACS Drought and Changes in Aridity hazard team to store, track and develop code, key outputs and relevant analysis. 
 
 Navigation: [Indices](https://github.com/AusClimateService/hazards-drought/tree/main#indices) | [Product status](https://github.com/AusClimateService/hazards-drought/tree/main#product-status) | [Figures](https://github.com/AusClimateService/hazards-drought/tree/main#figures) | [Analysis for CRO](https://github.com/AusClimateService/hazards-drought/tree/main#analysis-for-climate-risk-overview) | [FAQs](https://github.com/AusClimateService/hazards-drought/tree/main#faqs) | [Workflow](https://github.com/AusClimateService/hazards-drought/tree/main#workflow) | [References](https://github.com/AusClimateService/hazards-drought/tree/main#references) | [Team contacts](https://github.com/AusClimateService/hazards-drought/tree/main#drought-hazard-team-contacts) <br>
-Last updated: 23 July 2024 | ⚠️ **Note: Change figures and data has been updated!** ⚠️
+Last updated: 9 Aug 2024 | ⚠️ **Note: Change figures and data has been updated!** ⚠️
 ## Indices:
 ### Standardised Precipitation Index (SPI)
 The Standardized Precipitation Index (SPI) is a widely used index that measures the amount of precipitation over a specific period relative to the long-term average for that period. It standardizes precipitation as a z-score, making it possible to compare different locations and time scales. The SPI is typically used to identify and quantify the severity of droughts. Positive SPI values indicate wetter-than-average conditions, while negative values indicate drier-than-average conditions. We use a SPI-3, aggregated over three months and a value of -1 or lower as a drought metric, signifying moderate drought conditions. It is valuable in water resource management, agriculture, and climate studies for its simplicity and effectiveness in drought monitoring (McKee et al, 1993).
@@ -50,7 +50,7 @@ In terms of the colors:
 | AI |:white_circle:<br>:white_circle:<br>:green_circle:|:white_circle:<br>:white_circle:<br>:green_circle:|:white_circle:<br>:white_circle:<br>:green_circle:|:white_circle:<br>:white_circle:<br>:green_circle:|:white_circle:<br>:white_circle:<br>:green_circle:|<ul><li>N/A</li><li>N/A</li><li>31 July</li></ul>|/g/data/ia39/ncra/<br>drought_aridity/ai/|28/06/24
 
 ## Figures:
-Figures for each 2D metric (SPI <= -1, AI, rainfall percentiles) and GWL as well as for changes relative to GWL 1.2 are located in the index directories (see data location in table above) in the sub directory `/figures/`. **Note: use updated figures in `/spi_figures_18July/`**! We have collated the SPI GWL change figures into an example plot visualised below. This figure depicts the change in 'time spent in drought (SPI <= -1)' for GWL 1.5, 2.0 and 3.0 relative to GWL 1.2 for the 10th, 50th and 90th percentile of the multi-model ensemble:
+Figures for each 2D metric (SPI <= -1, AI, rainfall percentiles) and GWL as well as for changes relative to GWL 1.2 are located in the index directories (see data location in table above) in the sub directory `/figures/`. We have collated the SPI GWL change figures into an example plot visualised below. This figure depicts the change in 'time spent in drought (SPI <= -1)' for GWL 1.5, 2.0 and 3.0 relative to GWL 1.2 for the 10th, 50th and 90th percentile of the multi-model ensemble:
 ![Time spent in drought (SPI3 <= -1) change relative to GWL 1.2](figures/change_in_SPI.png)
 
 
