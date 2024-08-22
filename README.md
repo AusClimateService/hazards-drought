@@ -2,8 +2,8 @@
 
 GitHub repository for ACS Drought and Changes in Aridity hazard team to store, track and develop code, key outputs and relevant analysis. 
 
-Navigation: [Indices](https://github.com/AusClimateService/hazards-drought/tree/dev_readme?tab=readme-ov-file#indices) | [Product status](https://github.com/AusClimateService/hazards-drought/tree/dev_readme?tab=readme-ov-file#product-status) | [Figures](https://github.com/AusClimateService/hazards-drought/tree/dev_readme?tab=readme-ov-file#figures) | [Analysis for CRO](https://github.com/AusClimateService/hazards-drought/tree/dev_readme?tab=readme-ov-file#analysis-for-climate-risk-overview) | [Workflow](https://github.com/AusClimateService/hazards-drought/tree/dev_readme?tab=readme-ov-file#workflow) | [FAQs](https://github.com/AusClimateService/hazards-drought/tree/dev_readme?tab=readme-ov-file#FAQs) | [References](https://github.com/AusClimateService/hazards-drought/tree/dev_readme?tab=readme-ov-file#references) | [Team contacts](https://github.com/AusClimateService/hazards-drought/tree/dev_readme?tab=readme-ov-file#drought-hazard-team-contacts) <br>
-Last updated: 10 July 2024
+Navigation: [Indices](https://github.com/AusClimateService/hazards-drought/tree/main#indices) | [Product status](https://github.com/AusClimateService/hazards-drought/tree/main#product-status) | [Figures](https://github.com/AusClimateService/hazards-drought/tree/main#figures) | [Analysis for CRO](https://github.com/AusClimateService/hazards-drought/tree/main#analysis-for-climate-risk-overview) | [FAQs](https://github.com/AusClimateService/hazards-drought/tree/main#faqs) | [Workflow](https://github.com/AusClimateService/hazards-drought/tree/main#workflow) | [References](https://github.com/AusClimateService/hazards-drought/tree/main#references) | [Team contacts](https://github.com/AusClimateService/hazards-drought/tree/main#drought-hazard-team-contacts) <br>
+Last updated: 13 Aug 2024 | ⚠️ **Note: Watermarks have been removed from change figures.** ⚠️
 ## Indices:
 ### Standardised Precipitation Index (SPI)
 The Standardized Precipitation Index (SPI) is a widely used index that measures the amount of precipitation over a specific period relative to the long-term average for that period. It standardizes precipitation as a z-score, making it possible to compare different locations and time scales. The SPI is typically used to identify and quantify the severity of droughts. Positive SPI values indicate wetter-than-average conditions, while negative values indicate drier-than-average conditions. We use a SPI-3, aggregated over three months and a value of -1 or lower as a drought metric, signifying moderate drought conditions. It is valuable in water resource management, agriculture, and climate studies for its simplicity and effectiveness in drought monitoring (McKee et al, 1993).
@@ -56,7 +56,7 @@ Figures for each 2D metric (SPI <= -1, AI, rainfall percentiles) and GWL as well
 
 ## Analysis for Climate Risk Overview:
 ```diff
-- [COMING SOON / IN PROGRESS]
+[COMING SOON / IN PROGRESS]
 ```
 **Qualitative Analysis:** <br> 
 Some relevant findings for time spent in drought (SPI <= -1) and changes in aridity for Australia and different NCRA regions are listed below. 
@@ -77,7 +77,7 @@ These findings are derived from bias-corrected data. These statements are qualit
 |Marine                        |N/A          |N/A|
 
 **Quantitative Analysis:** <br> 
-Please note significant caveats apply in averaging 10th, 50th and 90th percentile multi-model ensembles to a spatial region as the representative model for the change is different at each gridcell. Thus we have distilled our quantitative change analysis on a model by model basis for each region, regions where more than 70% of all our ensemble members agree on the sign of the projected change are indicated in bold. This analysis could also be useful in devising regional storylines depending on selection of driest/wettest model. For the representative climate future associated with each GCM in the ACS analysis bucket refer to Table 3 from [Grose et al., 2023](https://doi.org/10.1016/j.cliser.2023.100368). 
+Please note significant caveats apply in averaging 10th, 50th and 90th percentile multi-model ensembles to a spatial region as the representative model for the change is different at each gridcell. Thus we have distilled our quantitative change analysis on a model by model basis for each region, regions where more than 66% of all our ensemble members agree on the sign of the projected change are indicated in bold, meaning a _likely_ change ([IPCC Uncertainty Guidance Note, 2010](https://www.ipcc.ch/site/assets/uploads/2017/08/AR5_Uncertainty_Guidance_Note.pdf)). This analysis could also be useful in devising regional storylines depending on selection of driest/wettest model. For the representative climate future associated with each GCM in the ACS analysis bucket refer to Table 3 from [Grose et al., 2023](https://doi.org/10.1016/j.cliser.2023.100368). 
 
 ![Regional changes for GWL 1.5](figures/SPI_regional_heatmap_change_GWL1.5.png)
 ![Regional changes for GWL 2.0](figures/SPI_regional_heatmap_change_GWL2.0.png)
