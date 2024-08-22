@@ -38,7 +38,7 @@ Rainfall percentiles are statistical measures used to evaluate and interpret pre
 - This absolute value index (mm) helps to understand how the lower tail of the precipitation distribution may shift.
 
 > #### Our Rainfall percentile outputs
-> -> 3-month 15th percentile threshold (mm).
+> -> 3-month 15th percentile threshold (mm).<br>
 > -> Absolute change in 3-month 15th percentile threshold relative to GWL1.2.<br>
 
 ### Other datasets our team is working on for future deliveries:
