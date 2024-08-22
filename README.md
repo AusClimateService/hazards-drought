@@ -2,9 +2,9 @@
 
 GitHub repository for ACS Drought and Changes in Aridity hazard team to store, track and develop code, key outputs and relevant analysis. 
 
-**Navigation:** [Info about our indices](https://github.com/AusClimateService/hazards-drought/tree/main#information-about-our-indices) | [Product status](https://github.com/AusClimateService/hazards-drought/tree/main#product-status) | [Figures](https://github.com/AusClimateService/hazards-drought/tree/main#figures) | [Analysis for CHO](https://github.com/AusClimateService/hazards-drought/tree/main#analysis-for-climate-hazard-overview) | [FAQs](https://github.com/AusClimateService/hazards-drought/tree/main#faqs) | [Workflow](https://github.com/AusClimateService/hazards-drought/tree/main#workflow) | [References](https://github.com/AusClimateService/hazards-drought/tree/main#references) | [Team contacts](https://github.com/AusClimateService/hazards-drought/tree/main#drought-hazard-team-contacts) <br>
+**Navigation:** [Info about indices](https://github.com/AusClimateService/hazards-drought/edit/main/README.md#information-about-our-indices) | [Product status](https://github.com/AusClimateService/hazards-drought/tree/main#product-status) | [Figures](https://github.com/AusClimateService/hazards-drought/tree/main#figures) | [Analysis for CHO](https://github.com/AusClimateService/hazards-drought/tree/main#analysis-for-climate-hazard-overview) | [FAQs](https://github.com/AusClimateService/hazards-drought/tree/main#faqs) | [Workflow](https://github.com/AusClimateService/hazards-drought/tree/main#workflow) | [References](https://github.com/AusClimateService/hazards-drought/tree/main#references) | [Team contacts](https://github.com/AusClimateService/hazards-drought/tree/main#drought-hazard-team-contacts) <br>
 <br> Last updated: 22/08/24
-<br> <sub> Watermarks removed from change figures + workflow and index information has been edited for clarity.</sub>
+<br> <sub> Watermarks removed from change figures + AGCD mask added + workflow and index information has been edited for clarity.</sub>
 ## Information about our Indices:
 ### Standardised Precipitation Index (SPI)
 The Standardized Precipitation Index (SPI) is a widely used index that measures the amount of precipitation over a specific period relative to the long-term average for that period. It is typically used to identify and quantify the severity of droughts making it a valuable index in water resource management, agriculture, and climate studies for its simplicity and effectiveness in drought monitoring (McKee et al, 1993).
@@ -70,7 +70,7 @@ In terms of the colors:
 | AI |:white_circle:<br>:white_circle:<br>:green_circle:|:white_circle:<br>:white_circle:<br>:green_circle:|:white_circle:<br>:white_circle:<br>:green_circle:|:white_circle:<br>:white_circle:<br>:green_circle:|:white_circle:<br>:white_circle:<br>:green_circle:|<ul><li>N/A</li><li>N/A</li><li>31 July</li></ul>|/g/data/ia39/ncra/<br>drought_aridity/ai/|28/06/24
 
 ## Figures:
-Figures for each 2D metric (SPI <= -1, AI, rainfall percentiles) and GWL as well as for changes relative to GWL 1.2 are located in the index directories (see data location in table above) in the sub directory `/figures/`. We have collated the SPI GWL change figures into an example plot visualised below. This figure depicts the change in 'time spent in drought (SPI <= -1)' for GWL 1.5, 2.0 and 3.0 relative to GWL 1.2 for the 10th, 50th and 90th percentile of the multi-model ensemble:
+Figures for each 2D metric (SPI <= -1, AI, rainfall percentiles) and GWL as well as for changes relative to GWL 1.2 are located in the index directories (see data location in table above) in the sub directory `/figures/`. We have collated the SPI GWL change figures for the 50th percentile into an example plot visualised below. This figure depicts the change in 'time spent in drought (SPI <= -1)' for GWL 1.5, 2.0 and 3.0 relative to GWL 1.2 for the 50th percentile of the multi-model ensemble. 
 ![Time spent in drought (SPI3 <= -1) change relative to GWL 1.2](figures/change_in_SPI.png)
 
 
@@ -93,10 +93,10 @@ Heatmaps for other indices can be found in https://github.com/AusClimateService/
 ## Workflow
 The following workflow was used to produce the ensemble maps and regional aggregate heatmaps.
 #### For absolute values:
-![Workflow for absolute values](https://github.com/AusClimateService/hazards-drought/blob/45adbd62855f36a4f0fb95fa63810bd6b026421e/figures/workflow_absolute.png)
+![Workflow for absolute values](figures/workflow_absolute.png)
 
 #### For changes between GWLs:
-![Workflow for changes between GWLs](https://github.com/AusClimateService/hazards-drought/blob/45adbd62855f36a4f0fb95fa63810bd6b026421e/figures/workflow_change.png)
+![Workflow for changes between GWLs](figures/workflow_change.png)
 
 ## References
 * Mckee, T.B., Doesken, N.J., Kleist, J. (1993). The relationship of drought frequency and duration to time scales. In: Proceedings of the 8th Conference on Applied Climatology. American Meteorological Society, Boston, MA, pp. 179–183.
