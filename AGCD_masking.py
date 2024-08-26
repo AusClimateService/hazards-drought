@@ -15,7 +15,7 @@ from dask.diagnostics import ProgressBar
 
 #< Functions                   
 def create_agcd_q_mask(ClimStartYr,ClimEndYr):
-    """ Creates a mask by having a weight of at least 1 (minimal influence to influence of nearby stations on climatology for grid cell) for at least 80% of days in the climatological period from ClimStartYr to ClimEndYr.
+    """ Creates an array of fractions of time when weight of at least a value of 1 (minimal influence to influence of nearby stations on climatology for grid cell) occurred in the specified period from ClimStartYr to ClimEndYr.
     Args:
         ClimStartYr
         ClimEndYr
@@ -26,7 +26,7 @@ def create_agcd_q_mask(ClimStartYr,ClimEndYr):
     da_weights            = xr.open_mfdataset('/g/data/zv2/agcd/v1-0-2/precip/weight/r005/01day/agcd_v1_precip_weight_r005_daily_*.nc').sel(time=slice(ClimStartYr,ClimEndYr))
     da_weights_count      = (da_weights['weight'] >= 1.0).sum('time', keep_attrs=True)
     ds                    = (da_weights_count / len(da_weights['time'])).to_dataset(name='fraction')
-    ds.attrs["comment"]   = f"The amount of influence that nearby station measurements have on a grid point (1 means 'minimal influence' and 3 means 'influenced by nearby stations'), set to 0 when a grid point has not been changed from its base climatology by nearby station measurements. This mask shows where nearby stations influenced the data, meaning a value of at least 1. It counts the fraction of days where the weight value is >=1 in the period {ClimStartYr}-{ClimEndYr}. When applying the mask, aim for a fraction of 0.8 or greater."
+    ds.attrs["comment"]   = f"The amount of influence that nearby station measurements have on a grid point varies from 0 when a grid point has not been changed from its base climatology by nearby station measurements, to 3 meaning 'influenced by nearby stations'. This array shows where nearby stations influenced the data, meaning a value of at least 1 ('minimal influence'). It counts the fraction of days where the weight value is >=1 in the period {ClimStartYr}-{ClimEndYr}. When applying the mask, aim for a fraction of 0.8 or greater."
     ds.attrs['history']   = cmdprov.new_log(extra_notes=[get_git_hash()])
     ds.attrs['agcd_version']= da_weights.attrs['agcd_version']
     
@@ -42,7 +42,7 @@ def get_git_hash():
 
 
 def main(inargs):
-    """Create AGCD quality mask for precip observations using weights from AGCD v1-0-2 on Gadi (zv2)"""
+    """Create AGCD weight fractions for precip observations using weights from AGCD v1-0-2 on Gadi (zv2)"""
 
     #< Set up dask
     dask.config.set({
