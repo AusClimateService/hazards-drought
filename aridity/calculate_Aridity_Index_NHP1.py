@@ -71,7 +71,6 @@ def main(inargs):
         models_gwl = pickle.load(file)
     
     print("From pkl fike:",models_gwl)
-    #< need to add 10 years to GWLs to calculate AI over 30 years?
 
     if inargs.index == 'atmospheric-based':
         var_e = "e0"
@@ -97,7 +96,9 @@ def main(inargs):
     
             for bc in bc_method:
                 infile_e0 = [filename_e0 for filename_e0 in files_e0 if bc in filename_e0]
+                print(f"Input for e0: {infile_e0}")
                 infile_pr = [filename_pr for filename_pr in files_pr if bc in filename_pr]
+                print(f"Input for pr: {infile_pr}")
                 run = infile_e0[0].split('/')[11]
                 print(bc)
                     
@@ -127,8 +128,10 @@ def main(inargs):
                     print(gwl)
                     syear = str(models_gwl[model][rcp][gwl][0])
                     eyear = str(models_gwl[model][rcp][gwl][1])
+                    print(f"Start year for {model}, {rcp}, {gwl}: {syear}")
+                    print(f"End year for {model}, {rcp}, {gwl}: {eyear}")
 
-                    ###############################  Truncate to annual GWL time series IF previous file exists ############################################
+                    ###############################  Truncate to annual GWL time series IF previous file exists #############################
                     file_name_ann_gwl = "{}AI-{}_NHP1-AUS-5_{}_{}_{}_{}_{}_{}.nc".format(inargs.OutputDir,inargs.index,model,rcp,run,bc,'annual','GWL'+str(int(float(gwl)*10))) 
 
                     if os.path.exists(file_name_ann_gwl)==False:
