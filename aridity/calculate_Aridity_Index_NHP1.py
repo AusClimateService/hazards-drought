@@ -132,7 +132,7 @@ def main(inargs):
                     print(f"End year for {model}, {rcp}, {gwl}: {eyear}")
 
                     ###############################  Truncate to annual GWL time series IF previous file exists #############################
-                    file_name_ann_gwl = "{}AI-{}_NHP1-AUS-5_{}_{}_{}_{}_{}_{}.nc".format(inargs.OutputDir,inargs.index,model,rcp,run,bc,'annual','GWL'+str(int(float(gwl)*10))) 
+                    file_name_ann_gwl = "{}GWL/AI-{}_NHP1-AUS-5_{}_{}_{}_{}_{}_{}.nc".format(inargs.OutputDir,inargs.index,model,rcp,run,bc,'annual','GWL'+str(int(float(gwl)*10))) 
 
                     if os.path.exists(file_name_ann_gwl)==False:
 
@@ -152,7 +152,7 @@ def main(inargs):
                         print("{name} exists. Pass.".format(name=file_name_ann_gwl))
 
                     ###############################  Create 2D GWL IF time series file exists ############################################
-                    file_name_2D_gwl = "{}AI-{}_NHP1-AUS-5_{}_{}_{}_{}_{}_{}.nc".format(inargs.OutputDir,inargs.index,model,rcp,run,bc,'2D','GWL'+str(int(float(gwl)*10)))
+                    file_name_2D_gwl = "{}GWL/AI-{}_NHP1-AUS-5_{}_{}_{}_{}_{}_{}.nc".format(inargs.OutputDir,inargs.index,model,rcp,run,bc,'2D','GWL'+str(int(float(gwl)*10)))
 
                     if os.path.exists(file_name_2D_gwl)==False:
                             
@@ -194,7 +194,7 @@ author:
                                      
     parser.add_argument("--index", type=str, choices=['atmospheric-based','plant-based'], help="Choose either 'atmospheric-based' or 'plant-based' aridity index.")
     parser.add_argument("--GCM", nargs='+', type=str, choices=['ACCESS1-0','GFDL-ESM2M','MIROC5','CNRM-CM5'], default = ['ACCESS1-0','GFDL-ESM2M','MIROC5','CNRM-CM5'], help="Choose GCM: 'ACCESS1-0','GFDL-ESM2M','MIROC5','CNRM-CM5'. If none are selected, the default is all GCMs")
-    parser.add_argument("--OutputDir", type=str, default='/g/data/ia39/ncra/drought_aridity/ai/', help="Output directory on Gadi. Default is'/g/data/ia39/ncra/drought_aridity/ai/'")
+    parser.add_argument("--OutputDir", type=str, default='/g/data/ia39/ncra/drought_aridity/ai/nhp1_BC_5km/', help="Output directory on Gadi. Default is'/g/data/ia39/ncra/drought_aridity/ai/'")
     parser.add_argument("--nworkers", type=int, default=15, help="Number of workers in dask distributed client.")
 
     args = parser.parse_args()
