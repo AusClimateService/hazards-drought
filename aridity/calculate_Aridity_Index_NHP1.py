@@ -63,7 +63,7 @@ def main(inargs):
     xr.set_options(keep_attrs = True)
 
     # Specify the path to .pkl file
-    file_path = '/g/data/mn51/users/dh4185/hazards-drought/gwl_years.pkl'
+    file_path = '/g/data/mn51/users/dh4185/hazards-drought/aridity/gwl_years.pkl'
     
     # Open the file in binary read mode
     with open(file_path, 'rb') as file:
@@ -102,7 +102,7 @@ def main(inargs):
                 print(bc)
                     
                 ###############################  Compute annual time series ############################################
-                file_name_ann = "{}/AI-{}_NHP1-AUS-5_{}_{}_{}_{}_{}_{}.nc".format(inargs.OutputDir,inargs.index,model,rcp,run,bc,'annual','2006-2099')
+                file_name_ann = "{}AI-{}_NHP1-AUS-5_{}_{}_{}_{}_{}_{}.nc".format(inargs.OutputDir,inargs.index,model,rcp,run,bc,'annual','2006-2099')
 
                 if os.path.exists(file_name_ann)==False:
                     ds_AI_ann = calc_AI(infile_pr,infile_e0,'2006','2099')
@@ -129,7 +129,7 @@ def main(inargs):
                     eyear = str(models_gwl[model][rcp][gwl][1])
 
                     ###############################  Truncate to annual GWL time series IF previous file exists ############################################
-                    file_name_ann_gwl = "{}/AI-{}_NHP1-AUS-5_{}_{}_{}_{}_{}_{}.nc".format(inargs.OutputDir,inargs.index,model,rcp,run,bc,'annual','GWL'+str(int(float(gwl)*10))) 
+                    file_name_ann_gwl = "{}AI-{}_NHP1-AUS-5_{}_{}_{}_{}_{}_{}.nc".format(inargs.OutputDir,inargs.index,model,rcp,run,bc,'annual','GWL'+str(int(float(gwl)*10))) 
 
                     if os.path.exists(file_name_ann_gwl)==False:
 
@@ -149,7 +149,7 @@ def main(inargs):
                         print("{name} exists. Pass.".format(name=file_name_ann_gwl))
 
                     ###############################  Create 2D GWL IF time series file exists ############################################
-                    file_name_2D_gwl = "{}/AI-{}_NHP1-AUS-5_{}_{}_{}_{}_{}_{}.nc".format(inargs.OutputDir,inargs.index,model,rcp,run,bc,'2D','GWL'+str(int(float(gwl)*10)))
+                    file_name_2D_gwl = "{}AI-{}_NHP1-AUS-5_{}_{}_{}_{}_{}_{}.nc".format(inargs.OutputDir,inargs.index,model,rcp,run,bc,'2D','GWL'+str(int(float(gwl)*10)))
 
                     if os.path.exists(file_name_2D_gwl)==False:
                             
@@ -163,7 +163,7 @@ def main(inargs):
                         print("Computing {name}...".format(name=file_name_2D_gwl))
 
                         #< Save output
-                        ds_AI_ann_gwl.to_netcdf(file_name_2D_gwl)
+                        ds_AI_2D_gwl.to_netcdf(file_name_2D_gwl)
                     else:
                         print("{name} exists. Pass.".format(name=file_name_2D_gwl))
 
@@ -191,7 +191,7 @@ author:
                                      
     parser.add_argument("--index", type=str, choices=['atmospheric-based','plant-based'], help="Choose either 'atmospheric-based' or 'plant-based' aridity index.")
     parser.add_argument("--GCM", nargs='+', type=str, choices=['ACCESS1-0','GFDL-ESM2M','MIROC5','CNRM-CM5'], default = ['ACCESS1-0','GFDL-ESM2M','MIROC5','CNRM-CM5'], help="Choose GCM: 'ACCESS1-0','GFDL-ESM2M','MIROC5','CNRM-CM5'. If none are selected, the default is all GCMs")
-    parser.add_argument("--OutputDir", type=str, default='/g/data/ia39/ncra/drought_aridity/ai/', help="Output directory on Gadi. Default is'/g/data/mn51/projects/work_package_4/climate_hazard_indices/drought/'")
+    parser.add_argument("--OutputDir", type=str, default='/g/data/ia39/ncra/drought_aridity/ai/', help="Output directory on Gadi. Default is'/g/data/ia39/ncra/drought_aridity/ai/'")
     parser.add_argument("--nworkers", type=int, default=15, help="Number of workers in dask distributed client.")
 
     args = parser.parse_args()
