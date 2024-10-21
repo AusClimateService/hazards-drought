@@ -71,7 +71,6 @@ def main(inargs):
         models_gwl = pickle.load(file)
     
     print("From pkl fike:",models_gwl)
-    #< need to add 10 years to GWLs to calculate AI over 30 years?
 
     if inargs.index == 'atmospheric-based':
         var_e = "e0"
@@ -81,8 +80,8 @@ def main(inargs):
     path_templ_pr = "/g/data/wj02/COMPLIANT_PUBLISHED/HMINPUT/output/AUS-5/BoM/"#{}/{}/{}/{}/latest/day/pr/"
     path_templ_e0 = "/g/data/wj02/COMPLIANT_PUBLISHED/HMOUTPUT/output/AUS-5/BoM/"#{}/{}/{}/{}/latest/day/pr/"
     
-    files_e0 = lib_david.get_file_paths(path_templ_e0,".nc",include=["rcp45",var_e]) + lib_david.get_file_paths(path_templ_e0,".nc",include=["rcp85",var_e])
-    files_pr = lib_david.get_file_paths(path_templ_pr,".nc",include=["rcp45","pr"],exclude=["BEFORE"]) + lib_david.get_file_paths(path_templ_pr,".nc",include=["rcp85","pr"],exclude=["BEFORE"])
+    # files_e0 = lib_david.get_file_paths(path_templ_e0,".nc",include=["rcp45",var_e]) + lib_david.get_file_paths(path_templ_e0,".nc",include=["rcp85",var_e])
+    # files_pr = lib_david.get_file_paths(path_templ_pr,".nc",include=["rcp45","pr"],exclude=["BEFORE"]) + lib_david.get_file_paths(path_templ_pr,".nc",include=["rcp85","pr"],exclude=["BEFORE"])
     
     bc_method = ["r240x120-QME","CSIRO-CCAM-r3355-r240x120-ISIMIP2b","_r240x120-ISIMIP2b","r240x120-MRNBC"]
 
@@ -97,7 +96,9 @@ def main(inargs):
     
             for bc in bc_method:
                 infile_e0 = [filename_e0 for filename_e0 in files_e0 if bc in filename_e0]
+                print(f"Input for e0: {infile_e0}")
                 infile_pr = [filename_pr for filename_pr in files_pr if bc in filename_pr]
+                print(f"Input for pr: {infile_pr}")
                 run = infile_e0[0].split('/')[11]
                 print(bc)
                     
@@ -127,9 +128,11 @@ def main(inargs):
                     print(gwl)
                     syear = str(models_gwl[model][rcp][gwl][0])
                     eyear = str(models_gwl[model][rcp][gwl][1])
+                    print(f"Start year for {model}, {rcp}, {gwl}: {syear}")
+                    print(f"End year for {model}, {rcp}, {gwl}: {eyear}")
 
-                    ###############################  Truncate to annual GWL time series IF previous file exists ############################################
-                    file_name_ann_gwl = "{}AI-{}_NHP1-AUS-5_{}_{}_{}_{}_{}_{}.nc".format(inargs.OutputDir,inargs.index,model,rcp,run,bc,'annual','GWL'+str(int(float(gwl)*10))) 
+                    ###############################  Truncate to annual GWL time series IF previous file exists #############################
+                    file_name_ann_gwl = "{}GWL/AI-{}_NHP1-AUS-5_{}_{}_{}_{}_{}_{}.nc".format(inargs.OutputDir,inargs.index,model,rcp,run,bc,'annual','GWL'+str(int(float(gwl)*10))) 
 
                     if os.path.exists(file_name_ann_gwl)==False:
 
@@ -149,7 +152,7 @@ def main(inargs):
                         print("{name} exists. Pass.".format(name=file_name_ann_gwl))
 
                     ###############################  Create 2D GWL IF time series file exists ############################################
-                    file_name_2D_gwl = "{}AI-{}_NHP1-AUS-5_{}_{}_{}_{}_{}_{}.nc".format(inargs.OutputDir,inargs.index,model,rcp,run,bc,'2D','GWL'+str(int(float(gwl)*10)))
+                    file_name_2D_gwl = "{}GWL/AI-{}_NHP1-AUS-5_{}_{}_{}_{}_{}_{}.nc".format(inargs.OutputDir,inargs.index,model,rcp,run,bc,'2D','GWL'+str(int(float(gwl)*10)))
 
                     if os.path.exists(file_name_2D_gwl)==False:
                             
@@ -191,7 +194,7 @@ author:
                                      
     parser.add_argument("--index", type=str, choices=['atmospheric-based','plant-based'], help="Choose either 'atmospheric-based' or 'plant-based' aridity index.")
     parser.add_argument("--GCM", nargs='+', type=str, choices=['ACCESS1-0','GFDL-ESM2M','MIROC5','CNRM-CM5'], default = ['ACCESS1-0','GFDL-ESM2M','MIROC5','CNRM-CM5'], help="Choose GCM: 'ACCESS1-0','GFDL-ESM2M','MIROC5','CNRM-CM5'. If none are selected, the default is all GCMs")
-    parser.add_argument("--OutputDir", type=str, default='/g/data/ia39/ncra/drought_aridity/ai/', help="Output directory on Gadi. Default is'/g/data/ia39/ncra/drought_aridity/ai/'")
+    parser.add_argument("--OutputDir", type=str, default='/g/data/ia39/ncra/drought_aridity/ai/nhp1_BC_5km/', help="Output directory on Gadi. Default is'/g/data/ia39/ncra/drought_aridity/ai/'")
     parser.add_argument("--nworkers", type=int, default=15, help="Number of workers in dask distributed client.")
 
     args = parser.parse_args()
