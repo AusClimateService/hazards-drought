@@ -27,7 +27,7 @@ logging.getLogger("distributed.worker.memory").setLevel(logging.ERROR)
 #################< Functions ########################
 def calc_AI(pr_file,e0_file,syear,eyear):
     # Resample to annually
-    da_e0 = e0_file.resample(time='YE').sum('time')
+    da_e0 = (e0_file*86400).resample(time='YE').sum('time')
     da_pr = (pr_file*86400).resample(time='YE').sum('time')
 
     # Select GWL periods
@@ -86,7 +86,7 @@ def main(inargs):
         print('========= '+RCM+'_'+model+' =========')
         bc_string = '_ACS-{}-{}-{}-{}.nc'.format(inargs.bcMethod, inargs.bcSource, '1960' if inargs.bcSource == 'AGCD' else '1979', '2022') if inargs.bc == 'output' else '.nc'
         variant_id = lib_david.data_source['CMIP6'][model]['variant-id']
-        file_name_ann = "{}/AI_{}_{}_{}_{}_{}_{}_{}{}".format(inargs.outputDir, inargs.index,'AGCD-05i',model,'ssp370',variant_id,'BOM' if RCM == 'BARPA-R' else 'CSIRO','v1-r1','_raw.nc' if inargs.bc == 'raw' else bc_string)
+        file_name_ann = "{}/AI_{}_{}_{}_{}_{}_{}_{}{}".format(inargs.outputDir, inargs.index,'AUS-15' if RCM == 'BARPA-R' else 'AUS-10i',model,'ssp370',variant_id,'BOM' if RCM == 'BARPA-R' else 'CSIRO','v1-r1','_raw.nc' if inargs.bc == 'raw' else bc_string)
 
         ###############################  Compute annual time series ############################################
 
