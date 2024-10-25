@@ -3,7 +3,7 @@
 GitHub repository for ACS Drought and Changes in Aridity hazard team to store, track and develop code, key outputs and relevant analysis. 
 
 **Navigation:** [Info about indices](https://github.com/AusClimateService/hazards-drought#information-about-our-indices) | [Product status](https://github.com/AusClimateService/hazards-drought/tree/main#product-status) | [Figures](https://github.com/AusClimateService/hazards-drought/tree/main#figures) | [Analysis for CHO](https://github.com/AusClimateService/hazards-drought/tree/main#analysis-for-climate-hazard-overview) | [FAQs](https://github.com/AusClimateService/hazards-drought/tree/main#faqs) | [Workflow](https://github.com/AusClimateService/hazards-drought/tree/main#workflow) | [References](https://github.com/AusClimateService/hazards-drought/tree/main#references) | [Contacts](https://github.com/AusClimateService/hazards-drought/tree/main#drought-hazard-team-contacts) <br>
-<br> Last updated: 22/08/24
+<br> Last updated: 25/10/24
 <br> <sub> Watermarks removed from change figures + AGCD mask added + workflow and index information has been edited for clarity.</sub>
 ## Information about our Indices:
 ### Standardised Precipitation Index (SPI)
@@ -89,6 +89,58 @@ Please note significant caveats apply in averaging 10th, 50th and 90th percentil
 Heatmaps for other indices can be found in https://github.com/AusClimateService/hazards-drought/tree/main/figures
 
 ## FAQs
+### What are the pros and cons for the SPI?
+| **Pros** | **Cons** |
+|----------|----------|
+| Endorsed by the World Meteorological Organization (WMO) as a reliable drought index. | Relies solely on rainfall data, which may not fully capture drought conditions, especially in a warming climate. |
+| Capable of assessing various drought types, including agricultural <br>and hydrological droughts through aggregation over different time scales (e.g., SPI3 for agricultural drought, longer scales for hydrological conditions). | Lacks units, making it difficult to interpret standard deviations in practical terms. |
+| Standardises values, allowing for easy comparison across different climates. | Assumes precipitation follows specific probability distributions, which may not fit all regions, particularly very dry areas. |
+|Can be calculated from bias-corrected data, useful when other metrics like PET are unavailable. | Should be used alongside other indicators for a more comprehensive understanding of drought conditions. |
+
+
+### What are the pros and cons for the 15th percentile rainfall threshold?
+| **Pros** | **Cons** |
+|----------|----------|
+| Straightforward index that relies solely on rainfall, making it easy to understand. | Lacks a moisture demand component, limiting its effectiveness in assessing drought. |
+| Uses millimetres as tangible units, making it practical to apply. | Not standardized; the 15th percentile can vary significantly between locations. |
+| Can supplement the SPI-1 and be aggregated over various time scales, enhancing versatility. | Remains a fixed threshold, which may not accurately reflect the impacts of moderate droughts on the ground. |
+| Popular in research and widely understood by those using BOM drought statements. | Empirically derived, meaning it may not fully capture the real-world effects of drought conditions. |
+
+### What are the limitations of the aridity index?
+The Aridity Index considers potential evapotranspiration which increases in a warming climate. However, it omits the higher atmospheric CO2 concentration which increases plant efficiency in water usage resulting in a less arid landscape than the AI suggests. See [CLEX Research brief](https://climateextremes.org.au/research-brief-aridity-index-too-simplistic-for-climate-projections/)
+
+### What's the difference between drought and aridity?
+Drought, a recurring natural phenomenon, profoundly influences Australia’s agricultural sector, water resources, ecosystem health, and socio-economic stability (Van Diik et al., 2013). Beyond its immediate effects, drought acts as a catalyst for heatwaves and severe fire seasons (Ruthrof et al., 2015). Aridity is a defining feature of the Australian climate, predominantly inland, but extending to the coast in western and southern Australia. While drought is a temporary period of abnormally dry conditions, aridity is a permanent climate feature in areas where annual potential evapotranspiration (PET) is at least twice the annual precipitation amount, having negative impacts on water security and bushfire risk.
+
+### What is flash drought?
+Flash drought refers to a type of drought that develops rapidly over a short period, typically weeks to a couple of months, rather than the extended timescale of traditional droughts. It is characterized by a sudden onset of intense dry conditions, driven by factors such as high temperatures, increased evapotranspiration, and a lack of precipitation. Flash droughts can severely impact agriculture, water resources, and ecosystems due to their quick progression and the limited time available to mitigate their effects.
+
+### Why is the aridity index calculated from NHP1 data?
+The aridity index takes rainfall and potential evapotranspiration (PET) inputs to be calculated. Bias adjustment has been done for rainfall, however, not for PET or the numerous variables that are needed to calculate PET. Until this is the case we fall back to NHP1 data that is based on CMIP5 but is bias corrected.
+
+### Can you clarify percent time spent in drought vs change in time spent in drought?
+For each GWL period we calculate the 'time spent in drought' as the proportion of months where the rolling 3-month SPI is below a threshold value of -1. Then to examine changes to this metric we compute the change in 'time spent in drought' by computing the relative change between GWL 1.5, 2.0 and 3.0 in relation to GWL1.2. For example, if for a location, we had 20% drought in GWL1.2 and 30% in GWL2.0 the difference is 10%. However, the percent change in time spent in drought will be +50% as per (GWL2.0-GWL1.2)/GWL1.2.
+
+### How do I interpret the %time spent in drought metric?
+For each GWL period we calculate the 'time spent in drought' as the proportion of months where the rolling 3-month SPI is below a threshold value of –1. If a region is expected to spend 20% time in drought, this is 20% of the 240 months in the 20-year period, so about 48 months. However, this doesn’t imply that these 48 months are consecutive. They are the sum of all drought months without informing about frequency, duration and severity (other than <-1) of individual droughts.
+
+### How can I apply the %time spent in drought metric and change in %time spent in drought?
+The percent 'time spent in drought' and changes relative to GWL1.2 can be examined on a regional basis for each ensemble member in the ACS ensemble. Examples: %time spent in drought for GWL2.0 and change in %time spent in drought for GWL2.0. It is important to consider any change signal in context of the range of spread. There are options to consider your analysis with or without the AGCD quality mask. This is important for regions where AGCD bias correction can contribute to spurious change signals in those regions.
+
+Note: %time spent in drought is calculated on 20-year GWL periods. These %values cannot be applied to a calendar year to derive statements about the 'number of days spent in drought per year' as that is physically implausible from the way our indices and metrics have been derived. 
+
+### Why is drought defined as SPI <= -1?
+This drought definition is based on the statistical nature of the SPI. An index of -1 refers to a standard deviation from the mean of -1. We’re following the widely accepted framework in McKee et al. (1993) who classified drought severities as follows:
+| SPI value | Drought category | Time in category |
+|----------|----------|----------|
+| 0 to -0.99 |	Mild drought	| ~24% |
+| -1.00 to -1.49 |	Moderate drought |	9.2% |
+| -1.50 to -1.99 |	Severe drought	| 4.4% |
+|&le; -2.00	| Extreme drought |	2.3% |
+|	         |       | ~40% |
+
+Note that our SPI <= -1 metric includes all values below or equal to -1, meaning that the time spent in drought is the cumulative sum of moderate, severe and extreme drought categories and accounts for ~16% of time for the reference period. Separating out different drought categories is planned for future work.
+
 
 ## Workflow
 The following workflow was used to produce the ensemble maps and regional aggregate heatmaps.
