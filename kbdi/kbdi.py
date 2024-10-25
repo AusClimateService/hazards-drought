@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import time
 
 sys.path.append('/g/data/mn51/users/dh4185/hazards-drought/aridity/')
-import lib_david
+from lib_david import *
 
 #< Functions
 def filter_files_by_year(file_list, start_year=1995, end_year=2014):
@@ -72,6 +72,23 @@ def get_batch(x, size):
     if size is None:
         size = len(x)
     return [x[i:i+size] for i in range(0, len(x), size)]
+
+data_source = {
+    'ERA5':{'var_p':'tp', 'var_sm':'swvl{}', 'var_pet':'evspsblpot','var_lat':'lat','var_lon':'lon'}, #swvl1+swvl2+swvl3 is volume of water in 1m soil column
+    'AGCD':{'var_p':'precip', 'var_lat':'latitude','var_lon':'longitude'},
+    'AWRA':{'var_sm':'s{}', 'var_pet':'e0','var_lat':'latitude','var_lon':'longitude'}, #s0 or ss
+    'CMIP6':{'var_tmax':'tasmax','var_tmin':'tasmin','var_p':'pr', 'var_sm':'mrsos', 'var_et':'evspsbl', 'var_pet':'evspsblpot',
+             'var_lat':'lat','var_lon':'lon',
+             'CMCC-ESM2':{'variant-id':'r1i1p1f1','version':'v1'}, 
+             'ACCESS-ESM1-5':{'variant-id':'r6i1p1f1','version':'v1'},
+             'ACCESS-CM2':{'variant-id':'r4i1p1f1','version':'v1'},
+             'EC-Earth3':{'variant-id':'r1i1p1f1','version':'v1'},
+             'MPI-ESM1-2-HR':{'variant-id':'r1i1p1f1','version':'v1'}, 
+             'CESM2':{'variant-id':'r11i1p1f1','version':'v1'},
+             'NorESM2-MM':{'variant-id':'r1i1p1f1','version':'v1'},
+             'CNRM-ESM2-1':{'variant-id':'r1i1p1f2','version':'v1'}
+        }
+    }
  
 
 def main(inargs):
@@ -88,7 +105,7 @@ def main(inargs):
     for model in model_list:
         print('========= '+RCM+'_'+model+' =========')
         bc_string = '_ACS-{}-{}-{}-{}.nc'.format(inargs.bcMethod, inargs.bcSource, '1960' if inargs.bcSource == 'AGCD' else '1979', '2022') if inargs.bc == 'output' else '.nc'
-        variant_id = lib_david.data_source['CMIP6'][model]['variant-id']
+        variant_id = data_source['CMIP6'][model]['variant-id'] # lib_david.data_source
         file_name = "{}/KBDI_{}_{}_{}_{}_{}_{}_{}{}".format(inargs.outputDir, inargs.index,'AGCD-05i',model,'ssp370',variant_id,'BOM' if RCM == 'BARPA-R' else 'CSIRO','v1-r1','_raw.nc' if inargs.bc == 'raw' else bc_string)
 
         ###############################  Compute KBDI ############################################
@@ -98,7 +115,7 @@ def main(inargs):
         
             # read input data for AI calculation
             syear = 1960
-            eyear = 2050
+            eyear = 2000
 
             if inargs.index == 'pet_thornthwaite':
                 pet_method = "Using Thornthwaite method to estimate potential evapotranspiration."
