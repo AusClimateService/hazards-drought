@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import time
 
 sys.path.append('/g/data/mn51/users/dh4185/hazards-drought/aridity/')
-from lib_david import *
+import lib_david
 
 #< Functions
 def filter_files_by_year(file_list, start_year=1995, end_year=2014):
@@ -115,7 +115,7 @@ def main(inargs):
         
             # read input data for AI calculation
             syear = 1960
-            eyear = 2000
+            eyear = 2050
 
             if inargs.index == 'pet_thornthwaite':
                 pet_method = "Using Thornthwaite method to estimate potential evapotranspiration."
@@ -168,7 +168,7 @@ def main(inargs):
             print("Multiprocessing done.")
 
             kbdi = xr.combine_by_coords(kbdi_list)
-            kbdi.KBDI = kbdi.KBDI.astype("float32")
+            kbdi['KBDI'] = kbdi.KBDI.astype("float32")
             end = time.time()
             print(f"Time needed for calculation: {(end - start)/60} min")
 
