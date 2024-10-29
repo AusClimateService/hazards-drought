@@ -114,8 +114,8 @@ def main(inargs):
             print(f"Computing annual time series. File: {file_name}...")
         
             # read input data for AI calculation
-            syear = 1960
-            eyear = 2050
+            syear = inargs.startYear#1960
+            eyear = inargs.endYear#2050
 
             if inargs.index == 'pet_thornthwaite':
                 pet_method = "Using Thornthwaite method to estimate potential evapotranspiration."
@@ -195,6 +195,8 @@ if __name__ == '__main__':
     parser.add_argument("--bcMethod", type=str, default='QME', choices=['QME', 'MRNBE'], help="Choose either 'MRNBC', 'QME'. Default is 'QME'")
     parser.add_argument("--index", type=str, choices=['pet_model','pet_thornthwaite'], help="Choose either 'pet_model' or 'pet_thornthwaite' basedy index.")
     parser.add_argument("--outputDir", type=str, default='/g/data/ia39/ncra/drought_aridity/kbdi/acs_downscaled_BC_5km/', help="Output directory on Gadi. Default is'/g/data/ia39/ncra/drought_aridity/kbdi/acs_downscaled_BC_5km/'")
+    parser.add_argument("--startYear", type=int, default=1960, help="Start year of climatology. Default is 1960.")
+    parser.add_argument("--endYear", type=int, default=2100, help="Start year of climatology. Default is 2100.")
     parser.add_argument("--nworkers", type=int, default=7, help="Number of workers in dask distributed client.")
     parser.add_argument("--batchSizeMB", type=int, default=50, help="Size in megabyte of batch to pass to workers. Aim for ~5-100MB") # time*lat*lon*4/1e6 =~ 5MB-100MB batch_size = sqrt(20*1e6/(4*time_len)) -> for 20MB chunk size
 
