@@ -3,8 +3,8 @@
 GitHub repository for ACS Drought and Changes in Aridity hazard team to store, track and develop code, key outputs and relevant analysis. 
 
 **Navigation:** [Info about indices](https://github.com/AusClimateService/hazards-drought#information-about-our-indices) | [Product status](https://github.com/AusClimateService/hazards-drought/tree/main#product-status) | [Figures](https://github.com/AusClimateService/hazards-drought/tree/main#figures) | [Analysis for CHO](https://github.com/AusClimateService/hazards-drought/tree/main#analysis-for-climate-hazard-overview) | [FAQs](https://github.com/AusClimateService/hazards-drought/tree/main#faqs) | [Workflow](https://github.com/AusClimateService/hazards-drought/tree/main#workflow) | [References](https://github.com/AusClimateService/hazards-drought/tree/main#references) | [Contacts](https://github.com/AusClimateService/hazards-drought/tree/main#drought-hazard-team-contacts) <br>
-<br> Last updated: 25/10/24
-<br> <sub> Watermarks removed from change figures + AGCD mask added + workflow and index information has been edited for clarity.</sub>
+<br> Last updated: 04/11/24
+<br> <sub> minor update to FAQs + clarification of blue/red dots on heatmaps.</sub>
 ## Information about our Indices:
 ### Standardised Precipitation Index (SPI)
 The Standardized Precipitation Index (SPI) is a widely used index that measures the amount of precipitation over a specific period relative to the long-term average for that period. It is typically used to identify and quantify the severity of droughts making it a valuable index in water resource management, agriculture, and climate studies for its simplicity and effectiveness in drought monitoring (McKee et al, 1993).
@@ -17,7 +17,7 @@ The Standardized Precipitation Index (SPI) is a widely used index that measures 
 > -> Percent change in proportion of time spent in drought relative to GWL1.2.<br><sub>For example, if for a location, we had 20% drought in GWL1.2 and 30% in GWL2.0 the _difference_ is 10%. However, the percent change in time spent in drought will be +50% as per (GWL2.0-GWL1.2)/GWL1.2.</sub>
 
 ### Aridity Index (AI)
-The Aridity Index (AI) is a numerical indicator used to quantify the dryness of a region. It is calculated as the ratio of annual precipitation to potential evapotranspiration. Lower values of AI indicate more arid conditions, while higher values suggest more humid conditions. The AI is commonly used in climatology, agriculture, and environmental studies to classify climates, assess water availability, and manage land and water resources (UNEP, 1992).
+The Aridity Index (AI) is a numerical indicator used to quantify the dryness of a region. It is calculated as the ratio of annual precipitation to potential evapotranspiration. Lower values of AI indicate more arid conditions, while higher values suggest more humid conditions. The AI is commonly used in climatology, agriculture, and environmental studies to classify climates, assess water availability, and manage land and water resources (UNEP, 1992). 
 Aridity categories based on AI values are as follows:
 - Hyper-Arid: AI < 0.05
 - Arid: 0.05 ≤ AI < 0.2
@@ -80,11 +80,11 @@ Figures for each 2D metric (SPI <= -1, AI, rainfall percentiles) and GWL as well
 Summary statements from our indices are in : [Drought confidence statements](https://bom365-my.sharepoint.com/:w:/g/personal/david_hoffmann_bom_gov_au/EZFuY9e98C5AgXD-42zgonwBrJq7NoktrsE5bHYmJp5kCQ?e=fzbMML&xsdata=MDV8MDJ8SmVzc2ljYS5CaGFyZHdhakBib20uZ292LmF1fDE2M2Y2N2EwM2ZiMDQxZjk1OGE3MDhkY2MxYzA5ZjE1fGQxYWQ3ZGI1OTdkZDRmMmI4MTZlNTBkNjYzYjdiYjk0fDB8MHw2Mzg1OTgyODE1OTczMTM4Mjd8VW5rbm93bnxUV0ZwYkdac2IzZDhleUpXSWpvaU1DNHdMakF3TURBaUxDSlFJam9pVjJsdU16SWlMQ0pCVGlJNklrMWhhV3dpTENKWFZDSTZNbjA9fDB8fHw%3d&sdata=TkczeWpxdlcrU1RNNDlsRC9zMm9lWTljbnNYRVZ2N0JyYkxhdXZGblM3Yz0%3d)
 
 **Quantitative Analysis:** <br> 
-Please note significant caveats apply in averaging 10th, 50th and 90th percentile multi-model ensembles to a spatial region as the representative model for the change is different at each gridcell. Thus we have distilled our quantitative change analysis on a model by model basis for each region, regions where more than 66% of all our ensemble members agree on the sign of the projected change are indicated in bold, meaning a _likely_ change ([IPCC Uncertainty Guidance Note, 2010](https://www.ipcc.ch/site/assets/uploads/2017/08/AR5_Uncertainty_Guidance_Note.pdf)). This analysis could also be useful in devising regional storylines depending on selection of driest/wettest model. For the representative climate future associated with each GCM in the ACS analysis bucket refer to Table 3 from [Grose et al., 2023](https://doi.org/10.1016/j.cliser.2023.100368). 
+Please note significant caveats apply in averaging 10th, 50th and 90th percentile multi-model ensembles to a spatial region as the representative model for the change is different at each gridcell. Thus we have distilled our quantitative change analysis on a model by model basis for each region, regions where more than 66% of all our ensemble members agree on the sign of the projected change are indicated in bold, meaning a _likely_ change ([IPCC Uncertainty Guidance Note, 2010](https://www.ipcc.ch/site/assets/uploads/2017/08/AR5_Uncertainty_Guidance_Note.pdf)). This analysis could also be useful in devising regional storylines depending on selection of driest/wettest model. For the representative climate future associated with each GCM in the ACS analysis bucket refer to Table 3 from [Grose et al., 2023](https://doi.org/10.1016/j.cliser.2023.100368). The red and blue dot annotations indicate the 10th (second driest) and 90th (second wettest) percentile ensemble member for each region. 
 
-![Regional changes for GWL 1.5](figures/SPI_regional_heatmap_change_GWL1.5.png)
-![Regional changes for GWL 2.0](figures/SPI_regional_heatmap_change_GWL2.0.png)
-![Regional changes for GWL 3.0](figures/SPI_regional_heatmap_change_GWL3.0.png)
+![Regional changes for GWL 1.5](figures/SPI_regional_heatmap_change_GWL1.5_masked.png)
+![Regional changes for GWL 2.0](figures/SPI_regional_heatmap_change_GWL2.0_masked.png)
+![Regional changes for GWL 3.0](figures/SPI_regional_heatmap_change_GWL3.0_masked.png)
 
 Heatmaps for other indices can be found in https://github.com/AusClimateService/hazards-drought/tree/main/figures
 
@@ -107,7 +107,7 @@ Heatmaps for other indices can be found in https://github.com/AusClimateService/
 | Popular in research and widely understood by those using BOM drought statements. | Empirically derived, meaning it may not fully capture the real-world effects of drought conditions. |
 
 ### What are the limitations of the aridity index?
-The Aridity Index considers potential evapotranspiration which increases in a warming climate. However, it omits the higher atmospheric CO2 concentration which increases plant efficiency in water usage resulting in a less arid landscape than the AI suggests. See [CLEX Research brief](https://climateextremes.org.au/research-brief-aridity-index-too-simplistic-for-climate-projections/)
+The Aridity Index considers potential evapotranspiration which increases in a warming climate. However, it omits the higher atmospheric CO2 concentration which increases plant efficiency in water usage resulting in a less arid landscape than the AI suggests. See [CLEX Research brief](https://climateextremes.org.au/research-brief-aridity-index-too-simplistic-for-climate-projections/). 
 
 ### What's the difference between drought and aridity?
 Drought, a recurring natural phenomenon, profoundly influences Australia’s agricultural sector, water resources, ecosystem health, and socio-economic stability (Van Diik et al., 2013). Beyond its immediate effects, drought acts as a catalyst for heatwaves and severe fire seasons (Ruthrof et al., 2015). Aridity is a defining feature of the Australian climate, predominantly inland, but extending to the coast in western and southern Australia. While drought is a temporary period of abnormally dry conditions, aridity is a permanent climate feature in areas where annual potential evapotranspiration (PET) is at least twice the annual precipitation amount, having negative impacts on water security and bushfire risk.
@@ -141,6 +141,8 @@ This drought definition is based on the statistical nature of the SPI. An index 
 
 Note that our SPI <= -1 metric includes all values below or equal to -1, meaning that the time spent in drought is the cumulative sum of moderate, severe and extreme drought categories and accounts for ~16% of time for the reference period. Separating out different drought categories is planned for future work.
 
+### Why do is the AGCD quality mask used in your analysis?
+Bias-correcting the ACS ensemble with AGCD data can lead to some spurious values in central interior Australia due to spatial and temporal gauge paucity. For our final national maps and regional insights we mask this area using a consistent quality mask also employed by other ACS hazard teams.
 
 ## Workflow
 The following workflow was used to produce the ensemble maps and regional aggregate heatmaps.
