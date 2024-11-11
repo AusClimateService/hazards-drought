@@ -40,7 +40,7 @@ file_paths = {'AGCD': "/g/data/zv2/agcd/v2-0-1/precip/total/r005/01month",
              }
 
 
-def load_target_variable(target_variable, RCM, model, accumulation, bc=False, bc_method=None, bc_source= None):
+def load_target_variable(dataset_source, target_variable, RCM, model, accumulation, bc=False, bc_method=None, bc_source= None):
     """
     Function to create dictionaries with tree structure of period/RCMs/models with relevant target variable grids as dictionary values.
 
@@ -68,8 +68,14 @@ def load_target_variable(target_variable, RCM, model, accumulation, bc=False, bc
 
     climstart = 1960
     climend = 2100
-
-    if bc == 'raw':
+    if dataset_source =='AGCD':
+        climstart = 1901
+        climend = 2022
+        file_path_base = file_paths['AGCD']
+        files = [file_path_base + "/agcd_v2-0-1_precip_total_r005_monthly_{}.nc".format(i) for i in range(climstart-1,climend+1)] 
+        target_period  = xr.open_mfdataset(files ,combine='nested', concat_dim='time',parallel=True).chunk(dict(time="auto"))[data_source['AGCD'][target_variable]]
+        output_xr = target_period.rolling(time=accumulation, center=False).sum().sel(time=slice(target_period.time[12], None))
+    elif dataset_source =='CMIP6' and bc == 'raw':
         file_path_base = file_paths[RCM]
         files=[]
         cmip6_hist = file_path_base.format(model,'historical',data_source['CMIP6'][model]['variant-id'], data_source['CMIP6'][target_variable])
@@ -82,7 +88,7 @@ def load_target_variable(target_variable, RCM, model, accumulation, bc=False, bc
         target_period = target_period * 86400 * 30
         # accumulate and write to dictionary
         output_xr = target_period.rolling(time=accumulation, center=False).sum().sel(time=slice(target_period.time[12], None))
-    else:
+    elif dataset_source =='CMIP6' and bc in ['input', 'output']:
         target_variable_key = data_source['CMIP6'][target_variable] if bc == 'input' else data_source['CMIP6'][target_variable]+'Adjust'
         file_path_base = file_paths['bias-correction']
         files=[]
@@ -104,5 +110,4 @@ def load_target_variable(target_variable, RCM, model, accumulation, bc=False, bc
         # accumulate and write to dictionary
         output_xr = target_period.rolling(time=accumulation, center=False).sum().sel(time=slice(target_period.time[12], None))
                     
-
     return output_xr
