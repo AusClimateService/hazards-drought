@@ -62,9 +62,9 @@ SPI and rainfall percentiles
 |p15 |:green_circle:     |:green_circle:          |:heavy_minus_sign:        |:heavy_minus_sign:       |:heavy_minus_sign:         |:heavy_minus_sign: |/g/data/ia39/ncra/drought_aridity/rainfall_percentiles|
 
 Aridity Index<br>
-|   | NHP1.0 | ACS CMIP6 raw | ACS CMIP6 BC (using appropriate equation for PET) | Location | 
+|   | NHP1.0 | ACS CMIP6 raw | ACS CMIP6 BC<br>(using appropriate equation for PET) | Location | 
 |---| :-:    | :-:           | :-:                                               |---       |          
-|AI |:green_circle:|:o:      |:o:                                                |/g/data/ia39/ncra/drought_aridity/ai|
+|AI |:green_circle:|:green_circle:     |:o:                                                |/g/data/ia39/ncra/drought_aridity/ai|
 
 ## Figures:
 Figures for each 2D metric (SPI <= -1, AI, rainfall percentiles) and GWL as well as for changes relative to GWL 1.2 are located in the index directories (see data location in table above) in the sub directory `/figures/`. We have collated the SPI GWL change figures for the 50th percentile into an example plot visualised below. This figure depicts the change in 'time spent in drought (SPI <= -1)' for GWL 1.5, 2.0 and 3.0 relative to GWL 1.2 for the 50th percentile of the multi-model ensemble. 
