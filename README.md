@@ -3,8 +3,8 @@
 GitHub repository for ACS Drought and Changes in Aridity hazard team to store, track and develop code, key outputs and relevant analysis. 
 
 **Navigation:** [Info about indices](https://github.com/AusClimateService/hazards-drought#information-about-our-indices) | [Product status](https://github.com/AusClimateService/hazards-drought/tree/main#product-status) | [Figures](https://github.com/AusClimateService/hazards-drought/tree/main#figures) | [Analysis for CHO](https://github.com/AusClimateService/hazards-drought/tree/main#analysis-for-climate-hazard-overview) | [FAQs](https://github.com/AusClimateService/hazards-drought/tree/main#faqs) | [Workflow](https://github.com/AusClimateService/hazards-drought/tree/main#workflow) | [References](https://github.com/AusClimateService/hazards-drought/tree/main#references) | [Contacts](https://github.com/AusClimateService/hazards-drought/tree/main#drought-hazard-team-contacts) <br>
-<br> Last updated: 04/11/24
-<br> <sub> minor update to FAQs + clarification of blue/red dots on heatmaps.</sub>
+<br> Last updated: 22/11/24
+<br> <sub> [Product status](https://github.com/AusClimateService/hazards-drought/tree/main#product-status) update for MRNBC + NSW/Qld RCMs. Symbology amended for colour accessibility.</sub>
 ## Information about our Indices:
 ### Standardised Precipitation Index (SPI)
 The Standardized Precipitation Index (SPI) is a widely used index that measures the amount of precipitation over a specific period relative to the long-term average for that period. It is typically used to identify and quantify the severity of droughts making it a valuable index in water resource management, agriculture, and climate studies for its simplicity and effectiveness in drought monitoring (McKee et al, 1993).
@@ -30,7 +30,7 @@ Aridity categories based on AI values are as follows:
 > -> Percent change in AI relative to GWL1.2.<br>
 > -> Categorical change in AI relative to GWL1.2.<br>
 
-### Rainfall percentiles
+### Rainfall 15th percentile (p15)
 Rainfall percentiles are statistical measures used to evaluate and interpret precipitation data. They indicate the relative ranking of a given rainfall amount within a historical reference period. 
 - We compute the 15th percentile on a three-month rainfall aggregation (smiliar to SPI).
 - This represents the threshold value below which 15% of the observed rainfall amounts fall, meaning it is drier than 85% of the reference data (WMO, 2017).
@@ -49,25 +49,22 @@ Rainfall percentiles are statistical measures used to evaluate and interpret pre
 - Evaporative Stress Index (ESI)
 
 ## Product Status:
-Status of the NCRA deliverables. 
-
-The three dots (in order from first/top/left to last/bottom/right) represent the datasets used to compute indices:
-- Dot 1: Pre-processed BARPA/CCAM – downscaled but NOT bias-corrected, 5 km (deliverable for 30 June)
-- Dot 2: Bias-corrected BARPA/CCAM – downscaled AND bias-corrected, 5 km (deliverable for 31 July)
-- Dot 3: National Hydrological Projections (NHP1.0) based on CMIP5 – bias-corrected, 5km
-Where only one dot is in the cell the format type does not apply to the metric, e.g. no time series for rainfall 15th percentile.
- 
-In terms of the colors:
+Colour / symbol guide:
 - :green_circle: The data is available in its final official form
 - :yellow_circle: The data creation is currently in progress and available soon
-- :red_circle: The data processing has not yet started
-- :white_circle: Not intended for delivery/not applicable
+- :o: The data processing has not yet started
+- :heavy_minus_sign: Not intended for delivery/not applicable
 
-| Index/metric | time series (ts) | GWLs ts | GWLs 2D | MME 2D | MME 2D change | Scheduled<br>delivery date | Data<br>location | Last update
-|-----         | :-:              |:-:      |:-:      |:-:     |:-:            |------------    |-----             |-----
-| SPI3 |:green_circle:<br>:green_circle:<br>:white_circle:|:green_circle:<br>:green_circle:<br>:white_circle:|:green_circle:<br>:green_circle:<br>:white_circle:|:green_circle:<br>:green_circle:<br>:white_circle:|:green_circle:<br>:green_circle:<br>:white_circle:|<ul><li>30 June</li><li>31 July</li><li>N/A</li></ul>|/g/data/ia39/ncra/<br>drought_aridity/spi/|29/06/24
-| Rainfall 15th prctl |:white_circle:|:white_circle:|:green_circle:<br>:green_circle:<br>:white_circle:|:green_circle:<br>:green_circle:<br>:white_circle:|:green_circle:<br>:green_circle:<br>:white_circle:|<ul><li>30 June</li><li>31 July</li><li>N/A</li></ul>|/g/data/ia39/ncra/<br>drought_aridity/<br>rainfall_percentiles/|27/06/24
-| AI |:white_circle:<br>:white_circle:<br>:green_circle:|:white_circle:<br>:white_circle:<br>:green_circle:|:white_circle:<br>:white_circle:<br>:green_circle:|:white_circle:<br>:white_circle:<br>:green_circle:|:white_circle:<br>:white_circle:<br>:green_circle:|<ul><li>N/A</li><li>N/A</li><li>31 July</li></ul>|/g/data/ia39/ncra/<br>drought_aridity/ai/|28/06/24
+SPI and rainfall percentiles
+|    | BARPA/CCAM<br>raw | BARPA/CCAM<br>AGCD-QME | BARPA/CCAM<br>AGCD-MRNBC | BARPA/CCAM<br>BARRA-QME | BARPA/CCAM<br>BARRA-MRNBC | Qld/NSW RCMs      | Location |
+|--- | :-:               | :-:                    | :-:                      | :-:                     | :-:                       | :-:               |------    |  
+|SPI3|:green_circle:     |:green_circle:          |:yellow_circle:           |:o:                      |:o:                        |:yellow_circle:    |/g/data/ia39/ncra/drought_aridity/spi|
+|p15 |:green_circle:     |:green_circle:          |:heavy_minus_sign:        |:heavy_minus_sign:       |:heavy_minus_sign:         |:heavy_minus_sign: |/g/data/ia39/ncra/drought_aridity/rainfall_percentiles|
+
+Aridity Index<br>
+|   | NHP1.0 | ACS CMIP6 raw | ACS CMIP6 BC (using appropriate equation for PET) | Location | 
+|---| :-:    | :-:           | :-:                                               |---       |          
+|AI |:green_circle:|:o:      |:o:                                                |/g/data/ia39/ncra/drought_aridity/ai|
 
 ## Figures:
 Figures for each 2D metric (SPI <= -1, AI, rainfall percentiles) and GWL as well as for changes relative to GWL 1.2 are located in the index directories (see data location in table above) in the sub directory `/figures/`. We have collated the SPI GWL change figures for the 50th percentile into an example plot visualised below. This figure depicts the change in 'time spent in drought (SPI <= -1)' for GWL 1.5, 2.0 and 3.0 relative to GWL 1.2 for the 50th percentile of the multi-model ensemble. 
