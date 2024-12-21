@@ -32,7 +32,6 @@ import dask.array as da
 sys.path.append('/g/data/mn51/users/jb6465/drought-github')
 import utils
 
-
 # Ignore warnings
 import warnings
 import logging
@@ -46,8 +45,7 @@ def compute_spi(full_period, base_period_start_year, base_period_end_year, datas
     from scipy.stats import gamma, norm
     
     ### Gamma distribution requires non-zero values - assign random value to avoid NaN gamma fit errors
-    base_period = full_period.sel(time=slice('%s-01-01' % (str(base_period_start_year)),\
-                                             '%s-12-31' % (str(base_period_end_year))))
+    base_period = full_period.sel(time=full_period['time'].dt.year.isin(range(base_period_start_year, base_period_end_year+1)))
     
     
     if dataset_source == 'AGCD': #deal with AGCD offshore lat/lon that have the same value assigned to them at all time slices (gives NaN errors when fitting). Masking doesn't work, just assign random non zero value.
@@ -110,12 +108,12 @@ def main(inargs):
     print('========= '+RCM+'_'+GCM+' =========')
     bc_string = '_ACS-{}-{}-{}-{}.nc'.format(inargs.bcMethod, inargs.bcSource, '1960' if inargs.bcSource == 'AGCD' else '1979', '2022') if inargs.bc == 'output' else '.nc'
     variant_id = utils.data_source['CMIP6'][GCM]['variant-id']
-    file_name = "{}/SPI{}_{}_{}_{}_{}_{}_{}_{}{}".format(inargs.outputDir, inargs.spiAccumulation,'AGCD-05i',GCM,'ssp370',variant_id,'BOM' if RCM == 'BARPA-R' else 'CSIRO','v1-r1','baseperiod'+(str(inargs.basePeriodStart)+str(inargs.basePeriodEnd)),'_raw.nc' if inargs.bc == 'raw' else bc_string) if inargs.datasetSource == 'CMIP6' else "{}/SPI{}_{}_{}.nc".format(inargs.outputDir, inargs.spiAccumulation,'AGCD','baseperiod'+(str(inargs.basePeriodStart)+str(inargs.basePeriodEnd)))
+    file_name = "{}/SPI{}_{}_{}_{}_{}_{}_{}_{}{}".format(inargs.outputDir, inargs.spiAccumulation,'AGCD-05i',GCM,inargs.SSP ,variant_id,'BOM' if 'BARPA' in RCM else 'CSIRO' if 'CCAM' in RCM else RCM if 'NARCliM' in RCM else 'UQ-DES','v1-r1','baseperiod'+(str(inargs.basePeriodStart)+str(inargs.basePeriodEnd)),'_raw.nc' if inargs.bc == 'raw' else bc_string) if inargs.datasetSource == 'CMIP6' else "{}/SPI{}_{}_{}.nc".format(inargs.outputDir, inargs.spiAccumulation,'AGCD','baseperiod'+(str(inargs.basePeriodStart)+str(inargs.basePeriodEnd)))
     
     if os.path.exists(file_name)==False:
         print("Computing {name}...".format(name=file_name))
         # Load in files as dask xarray
-        input_array = utils.load_target_variable(inargs.datasetSource, 'var_p', RCM, GCM, inargs.spiAccumulation, bc=inargs.bc, bc_method=inargs.bcMethod, bc_source=inargs.bcSource)
+        input_array = utils.load_target_variable(inargs.datasetSource, 'var_p', inargs.SSP, RCM, GCM, inargs.spiAccumulation, bc=inargs.bc, bc_method=inargs.bcMethod, bc_source=inargs.bcSource)
         input_array = input_array.astype(np.float32).chunk({'time':-1, 'lat':'auto', 'lon':'auto'})
         # Group by month and apply the SPI calculation
         spi_array_grouped = input_array.groupby('time.month').map(lambda x: compute_spi(x, inargs.basePeriodStart, inargs.basePeriodEnd, inargs.datasetSource))
@@ -129,7 +127,8 @@ def main(inargs):
         if inargs.datasetSource == 'CMIP6':
             ds_SPI.attrs['driving GCM'] = GCM
             ds_SPI.attrs['variant ID'] = variant_id
-            ds_SPI.attrs['RCM'] = RCM
+            ds_SPI.attrs['RCM'] = RCM, utils.data_source['CMIP6'][GCM][RCM] if RCM=='UQ-DES' else ''
+            ds_SPI.attrs['SSP'] = inargs.SSP
 
         # Specify compression options to avoid large file sizes
         encoding = {'SPI{}'.format(inargs.spiAccumulation): {'zlib': True, 'complevel': 5, 'dtype':'float32'}}
@@ -160,10 +159,11 @@ author:
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
                                      
     parser.add_argument("--datasetSource", type=str, choices=['AGCD', 'CMIP6'], help="Choose dataset source from ['AGCD', 'CMIP6']") #soon to add ERA5/ERA5-Land
-    parser.add_argument("--RCM", type=str, choices=['BARPA-R', 'CCAM-v2203-SN'], help="Choose RCM from ['BARPA-R', 'CCAM-v2203-SN']")
-    parser.add_argument("--GCM", type=str, choices=['CMCC-ESM2', 'ACCESS-ESM1-5', 'ACCESS-CM2', 'EC-Earth3', 'CESM2', 'CNRM-ESM2-1', 'MPI-ESM1-2-HR', 'NorESM2-MM'], help="Input GCM - check ia39 for correct GCM/RCM availabilies")
+    parser.add_argument("--SSP", type=str, choices=['ssp126', 'ssp370'], help="Choose SSP from ['ssp126', 'ssp370']")
+    parser.add_argument("--RCM", type=str, choices=['BARPA-R', 'CCAM-v2203-SN', 'NARCliM2-0-WRF412R3', 'NARCliM2-0-WRF412R5', 'UQ-DES'], help="Choose RCM from ['BARPA-R', 'CCAM-v2203-SN', 'NARCliM2-0-WRF412R3', 'NARCliM2-0-WRF412R5', 'UQ-DES']")
+    parser.add_argument("--GCM", type=str, choices=['ACCESS-CM2', 'ACCESS-ESM1-5', 'CMCC-ESM2', 'CESM2', 'CNRM-CM6-1-HR', 'CNRM-ESM2-1', 'EC-Earth3', 'EC-Earth3-Veg', 'FGOALS-g3', 'GFDL-ESM4', 'GISS-E2-1-G',  'MPI-ESM1-2-HR', 'MPI-ESM1-2-LR', 'MRI-ESM2-0', 'NorESM2-MM', 'UKESM1-0-LL'], help="Input GCM - check ia39 for correct GCM/RCM availabilies")
     parser.add_argument("--bc", type=str, choices=['raw','input','output'], help="Choose either 'raw' (py18/hq89 raw BARPA/CCAM), 'input' (ia39 bc input, 5km) or 'output' (ia39 bc output, 5km).")
-    parser.add_argument("--bcSource", type=str, default='AGCD', choices=['AGCD', 'BARRA'], help="Choose either 'AGCD', 'BARRA'. Default is 'AGCD'")
+    parser.add_argument("--bcSource", type=str, default='AGCD', choices=['AGCDv1', 'BARRAR2'], help="Choose either 'AGCDv1', 'BARRAR2'. Default is 'AGCD'")
     parser.add_argument("--bcMethod", type=str, default='QME', choices=['QME', 'MRNBC'], help="Choose either 'MRNBC', 'QME'. Default is 'QME'")
     parser.add_argument("--spiAccumulation", type=int, default=3, help="Choose SPI accumulation i.e. SPI-1, SPI-3, SPI-6, SPI-12. Default is 3")
     parser.add_argument("--basePeriodStart", type=int, default=1965, help="Specify start year for base period. Minimum 30 years advised. 50 years helps avoid NaN errors on upper tails. Default = 1965.")
