@@ -44,11 +44,13 @@ file_paths = {'AGCD': "/g/data/zv2/agcd/v2-0-1/precip/total/r005/01month",
               'ERA5': "/g/data/zz93/era5-land/reanalysis/{}/{}", #variable #year
               'BARPA-R': "/g/data/py18/BARPA/output/CMIP6/DD/AUS-15/BOM/{}/{}/{}/BARPA-R/v1-r1/mon/{}/v20231001", #model #hist/ssp #variantid #variable
               'CCAM-v2203-SN': "/g/data/hq89/CCAM/output/CMIP6/DD/AUS-10i/CSIRO/{}/{}/{}/CCAM-v2203-SN/v1-r1/mon/{}/v20231206", #model #hist/ssp #variantid #variable
-              'bias-correction': "/g/data/ia39/australian-climate-service/test-data/CORDEX-CMIP6/bias-adjustment-{}/AGCD-05i/{}/{}/{}/{}/{}/{}/day/{}" #output/input #BOM/CSIRO #model #hist/ssp #variantid #RCM #BCdetails #variable
+              'NARCliM': "/g/data/zz63/NARCliM2-0/output/CMIP6/DD/AUS-18/NSW-Government/{}/{}/{}/{}/v1-r1/mon/{}/v20240312", #model #hist/ssp #variantid #NARCliM configuration #variable
+              'UQ-DES': "/g/data/ig45/QldFCP-2/output/CMIP6/DD/AUS-10i/UQ-DEC/{}/{}/{}/{}/v1-r1/mon/{}/v20240709", #model #hist/ssp #variantid #UQ-DES downscaling RCM #variable
+              'bias-correction': "/g/data/ia39/australian-climate-service/release/CORDEX/output-Adjust/CMIP6/bias-adjusted-{}/AUST-05i/{}/{}/{}/{}/{}/{}/day/{}/v20241216" #output/input #RCM #model #hist/ssp #variantid #RCM #BCdetails #variable
              }
 
 
-def load_target_variable(dataset_source, target_variable, RCM, model, accumulation, bc=False, bc_method=None, bc_source= None):
+def load_target_variable(dataset_source, target_variable, ssp, RCM, model, accumulation, bc=False, bc_method=None, bc_source= None):
     """
     Function to create dictionaries with tree structure of period/RCMs/models with relevant target variable grids as dictionary values.
 
@@ -62,7 +64,7 @@ def load_target_variable(dataset_source, target_variable, RCM, model, accumulati
     - accumulation: int from [1, 3, 6, 9, 12] 
         (no. of months to accumulate)
     - bc: string from ['input', 'output', 'raw'] 
-        (string switch to access raw (hq89/py18) preprocessed bc (ia39) or bc data (ia39)
+        (string switch to access raw (hq89/py18/zz63/ig45) or bc input/output data (ia39)
     - bc_method: string from ['QME', MRNBC'] 
         (bias correction method - NOTE MRNBC is not live yet for all ensembles)
     - bc_source: string from ['AGCD', 'BARRA'] 
@@ -90,10 +92,10 @@ def load_target_variable(dataset_source, target_variable, RCM, model, accumulati
         file_path_base = file_paths[RCM]
         files=[]
         cmip6_hist = file_path_base.format(model,'historical',data_source['CMIP6'][model]['variant-id'], data_source['CMIP6'][target_variable])
-        cmip6_ssp370 = file_path_base.format(model,'ssp370',data_source['CMIP6'][model]['variant-id'], data_source['CMIP6'][target_variable])
+        cmip6_ssp = file_path_base.format(model, ssp, data_source['CMIP6'][model]['variant-id'], data_source['CMIP6'][target_variable])
         for i in range(climstart,climend+1):
             files.extend(sorted(glob.glob("{}/*{}12.nc".format(cmip6_hist, i))))
-            files.extend(sorted(glob.glob("{}/*{}12.nc".format(cmip6_ssp370, i))))
+            files.extend(sorted(glob.glob("{}/*{}12.nc".format(cmip6_ssp, i))))
         target_period = xr.open_mfdataset(files, combine='nested', concat_dim='time', parallel=True).chunk({"time": -1})[data_source['CMIP6'][target_variable]]
         # convert precip flux (kg m-2 s-1) into mm/month 
         target_period = target_period * 86400 * 30
@@ -109,12 +111,12 @@ def load_target_variable(dataset_source, target_variable, RCM, model, accumulati
                                             'historical',\
                                             data_source['CMIP6'][model]['variant-id'],\
                                             data_source['CMIP6'][model][RCM] if RCM=='UQ-DES' else RCM,\
-                                            'v1-r1' if bc == 'input' else 'v1-r1-ACS-{}-{}-{}-2022'.format(bc_method, bc_source, '1960' if bc_source == 'AGCD' else '1980'),
+                                            'v1-r1' if bc == 'input' else 'v1-r1-ACS-{}-{}-{}-2022'.format(bc_method, bc_source, '1960' if bc_source == 'AGCDv1' else '1980'),
                                             target_variable_key)
-        cmip6_ssp370 = cmip6_hist.replace('historical', 'ssp370')
+        cmip6_ssp = cmip6_hist.replace('historical', ssp)
         for i in range(climstart,climend+1):
             files.extend(sorted(glob.glob("{}/*{}".format(cmip6_hist, str(i)+'12.nc' if bc == 'raw' else str(i)+'1231.nc'))))
-            files.extend(sorted(glob.glob("{}/*{}".format(cmip6_ssp370, str(i)+'12.nc' if bc == 'raw' else str(i)+'1231.nc'))))
+            files.extend(sorted(glob.glob("{}/*{}".format(cmip6_ssp, str(i)+'12.nc' if bc == 'raw' else str(i)+'1231.nc'))))
     
         #bc files are of daily frequency - load in and resample to calendar month
         target_period = xr.open_mfdataset(files)[target_variable_key].resample(time='ME').sum()
