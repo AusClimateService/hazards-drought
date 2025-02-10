@@ -72,6 +72,23 @@ def get_batch(x, size):
     if size is None:
         size = len(x)
     return [x[i:i+size] for i in range(0, len(x), size)]
+
+data_source = {
+    'ERA5':{'var_p':'tp', 'var_sm':'swvl{}', 'var_pet':'evspsblpot','var_lat':'lat','var_lon':'lon'}, #swvl1+swvl2+swvl3 is volume of water in 1m soil column
+    'AGCD':{'var_p':'precip', 'var_lat':'latitude','var_lon':'longitude'},
+    'AWRA':{'var_sm':'s{}', 'var_pet':'e0','var_lat':'latitude','var_lon':'longitude'}, #s0 or ss
+    'CMIP6':{'var_tmax':'tasmax','var_tmin':'tasmin','var_p':'pr', 'var_sm':'mrsos', 'var_et':'evspsbl', 'var_pet':'evspsblpot',
+             'var_lat':'lat','var_lon':'lon',
+             'CMCC-ESM2':{'variant-id':'r1i1p1f1','version':'v1'}, 
+             'ACCESS-ESM1-5':{'variant-id':'r6i1p1f1','version':'v1'},
+             'ACCESS-CM2':{'variant-id':'r4i1p1f1','version':'v1'},
+             'EC-Earth3':{'variant-id':'r1i1p1f1','version':'v1'},
+             'MPI-ESM1-2-HR':{'variant-id':'r1i1p1f1','version':'v1'}, 
+             'CESM2':{'variant-id':'r11i1p1f1','version':'v1'},
+             'NorESM2-MM':{'variant-id':'r1i1p1f1','version':'v1'},
+             'CNRM-ESM2-1':{'variant-id':'r1i1p1f2','version':'v1'}
+        }
+    }
  
 
 def main(inargs):
@@ -88,7 +105,7 @@ def main(inargs):
     for model in model_list:
         print('========= '+RCM+'_'+model+' =========')
         bc_string = '_ACS-{}-{}-{}-{}.nc'.format(inargs.bcMethod, inargs.bcSource, '1960' if inargs.bcSource == 'AGCD' else '1979', '2022') if inargs.bc == 'output' else '.nc'
-        variant_id = lib_david.data_source['CMIP6'][model]['variant-id']
+        variant_id = data_source['CMIP6'][model]['variant-id'] # lib_david.data_source
         file_name = "{}/KBDI_{}_{}_{}_{}_{}_{}_{}{}".format(inargs.outputDir, inargs.index,'AGCD-05i',model,'ssp370',variant_id,'BOM' if RCM == 'BARPA-R' else 'CSIRO','v1-r1','_raw.nc' if inargs.bc == 'raw' else bc_string)
 
         ###############################  Compute KBDI ############################################
@@ -97,8 +114,8 @@ def main(inargs):
             print(f"Computing annual time series. File: {file_name}...")
         
             # read input data for AI calculation
-            syear = 1960
-            eyear = 2050
+            syear = inargs.startYear#1960
+            eyear = inargs.endYear#2050
 
             if inargs.index == 'pet_thornthwaite':
                 pet_method = "Using Thornthwaite method to estimate potential evapotranspiration."
@@ -151,7 +168,7 @@ def main(inargs):
             print("Multiprocessing done.")
 
             kbdi = xr.combine_by_coords(kbdi_list)
-            kbdi.KBDI = kbdi.KBDI.astype("float32")
+            kbdi['KBDI'] = kbdi.KBDI.astype("float32")
             end = time.time()
             print(f"Time needed for calculation: {(end - start)/60} min")
 
@@ -178,6 +195,8 @@ if __name__ == '__main__':
     parser.add_argument("--bcMethod", type=str, default='QME', choices=['QME', 'MRNBE'], help="Choose either 'MRNBC', 'QME'. Default is 'QME'")
     parser.add_argument("--index", type=str, choices=['pet_model','pet_thornthwaite'], help="Choose either 'pet_model' or 'pet_thornthwaite' basedy index.")
     parser.add_argument("--outputDir", type=str, default='/g/data/ia39/ncra/drought_aridity/kbdi/acs_downscaled_BC_5km/', help="Output directory on Gadi. Default is'/g/data/ia39/ncra/drought_aridity/kbdi/acs_downscaled_BC_5km/'")
+    parser.add_argument("--startYear", type=int, default=1960, help="Start year of climatology. Default is 1960.")
+    parser.add_argument("--endYear", type=int, default=2100, help="Start year of climatology. Default is 2100.")
     parser.add_argument("--nworkers", type=int, default=7, help="Number of workers in dask distributed client.")
     parser.add_argument("--batchSizeMB", type=int, default=50, help="Size in megabyte of batch to pass to workers. Aim for ~5-100MB") # time*lat*lon*4/1e6 =~ 5MB-100MB batch_size = sqrt(20*1e6/(4*time_len)) -> for 20MB chunk size
 
