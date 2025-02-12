@@ -92,7 +92,7 @@ def main(inargs):
     GCM = inargs.GCM
 
     print('========= '+RCM+'_'+GCM+' =========')
-    bc_string = '_ACS-{}-{}-{}-{}.nc'.format(inargs.bcMethod, inargs.bcSource, '1960' if inargs.bcSource == 'AGCD' else '1979', '2022')
+    bc_string = '_ACS-{}-{}-{}-{}.nc'.format(inargs.bcMethod, inargs.bcSource, '1960' if inargs.bcSource == 'AGCDv1' else '1979', '2022')
     variant_id = utils.data_source['CMIP6'][GCM]['variant-id']
     file_name = "{}/p{}_{}month_{}_{}_{}_{}_{}_{}_GWL{}{}".format(inargs.outputDir, inargs.percentileThreshold, inargs.Accumulation,'AGCD-05i',GCM,'ssp370',variant_id,'BOM' if RCM == 'BARPA-R' else 'CSIRO','v1-r1', inargs.GWL,'.nc' if inargs.bc == 'input' else bc_string)
     
@@ -100,8 +100,7 @@ def main(inargs):
         print("Computing {name}...".format(name=file_name))
 
         # Group by month and apply the SPI calculation
-        input_array = utils.load_target_variable('var_p', RCM, GCM, inargs.Accumulation, bc=inargs.bc, bc_method=inargs.bcMethod, bc_source=inargs.bcSource)
-        
+        input_array = utils.load_target_variable(inargs.datasetSource, 'var_p', inargs.SSP, RCM, GCM, inargs.Accumulation, bc=inargs.bc, bc_method=inargs.bcMethod, bc_source=inargs.bcSource)        
         input_array = get_GWL_timeslice(input_array,'CMIP6',GCM,variant_id,'ssp370',inargs.GWL)
         input_array = input_array.astype(np.float32).chunk({'time':-1})
         ds_perc = input_array.groupby('time.month').map(lambda x: compute_percentile(x, inargs.percentileThreshold))
@@ -139,11 +138,13 @@ author:
                                      argument_default=argparse.SUPPRESS,
                                      formatter_class=argparse.RawDescriptionHelpFormatter)
     
+    parser.add_argument("--datasetSource", type=str, choices=['AGCD', 'CMIP6'], help="Choose dataset source from ['AGCD', 'CMIP6']") #soon to add ERA5/ERA5-Land
+    parser.add_argument("--SSP", type=str, choices=['ssp126', 'ssp370'], help="Choose SSP from ['ssp126', 'ssp370']")
     parser.add_argument("--RCM", type=str, choices=['BARPA-R', 'CCAM-v2203-SN'], help="Choose RCM from ['BARPA-R', 'CCAM-v2203-SN']")
     parser.add_argument("--GCM", type=str, choices=['CMCC-ESM2', 'ACCESS-ESM1-5', 'ACCESS-CM2', 'EC-Earth3', 'CESM2', 'CNRM-ESM2-1', 'MPI-ESM1-2-HR', 'NorESM2-MM'], help="Input GCM - check ia39 for correct GCM/RCM availabilies")
     parser.add_argument("--GWL", type=str, choices=['1.0', '1.2', '1.5', '2.0', '3.0', '4.0'], help="Specify GWL")
     parser.add_argument("--bc", type=str, choices=['raw','input','output'], help="Choose either 'raw' (py18/hq89 raw BARPA/CCAM), 'input' (ia39 bc input, 5km) or 'output' (ia39 bc output, 5km).")
-    parser.add_argument("--bcSource", type=str, default='AGCD', choices=['AGCD', 'BARRA'], help="Choose either 'AGCD', 'BARRA'. Default is 'AGCD'")
+    parser.add_argument("--bcSource", type=str, default='AGCDv1', choices=['AGCDv1', 'BARRAR2'], help="Choose either 'AGCDv1', 'BARRAR2'. Default is 'AGCD'")
     parser.add_argument("--bcMethod", type=str, default='QME', choices=['QME', 'MRNBC'], help="Choose either 'MRNBC', 'QME'. Default is 'QME'")
     parser.add_argument("--percentileThreshold", type=int, default=15, help="Specify rainfall percentile threshold. Default is 15 as it corresponds to SPI=-1.")
     parser.add_argument("--Accumulation", type=int, default=3, help="Choose accumulation i.e. 1-month, 3-months, 6-months, etc. Default is 3")
