@@ -163,7 +163,7 @@ author:
     parser.add_argument("--RCM", type=str, choices=['BARPA-R', 'CCAM-v2203-SN', 'NARCliM2-0-WRF412R3', 'NARCliM2-0-WRF412R5', 'UQ-DES'], help="Choose RCM from ['BARPA-R', 'CCAM-v2203-SN', 'NARCliM2-0-WRF412R3', 'NARCliM2-0-WRF412R5', 'UQ-DES']")
     parser.add_argument("--GCM", type=str, choices=['ACCESS-CM2', 'ACCESS-ESM1-5', 'CMCC-ESM2', 'CESM2', 'CNRM-CM6-1-HR', 'CNRM-ESM2-1', 'EC-Earth3', 'EC-Earth3-Veg', 'FGOALS-g3', 'GFDL-ESM4', 'GISS-E2-1-G',  'MPI-ESM1-2-HR', 'MPI-ESM1-2-LR', 'MRI-ESM2-0', 'NorESM2-MM', 'UKESM1-0-LL'], help="Input GCM - check ia39 for correct GCM/RCM availabilies")
     parser.add_argument("--bc", type=str, choices=['raw','input','output'], help="Choose either 'raw' (py18/hq89 raw BARPA/CCAM), 'input' (ia39 bc input, 5km) or 'output' (ia39 bc output, 5km).")
-    parser.add_argument("--bcSource", type=str, default='AGCD', choices=['AGCDv1', 'BARRAR2'], help="Choose either 'AGCDv1', 'BARRAR2'. Default is 'AGCD'")
+    parser.add_argument("--bcSource", type=str, default='AGCDv1', choices=['AGCDv1', 'BARRAR2'], help="Choose either 'AGCDv1', 'BARRAR2'. Default is 'AGCDv1'")
     parser.add_argument("--bcMethod", type=str, default='QME', choices=['QME', 'MRNBC'], help="Choose either 'MRNBC', 'QME'. Default is 'QME'")
     parser.add_argument("--spiAccumulation", type=int, default=3, help="Choose SPI accumulation i.e. SPI-1, SPI-3, SPI-6, SPI-12. Default is 3")
     parser.add_argument("--basePeriodStart", type=int, default=1965, help="Specify start year for base period. Minimum 30 years advised. 50 years helps avoid NaN errors on upper tails. Default = 1965.")
