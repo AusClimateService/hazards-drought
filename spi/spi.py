@@ -29,7 +29,7 @@ from scipy.stats import gamma, norm
 import dask.array as da
 
 # Import utils
-sys.path.append('/g/data/mn51/users/jb6465/drought-github')
+sys.path.append('/g/data/mn51/users/jb6465/code/drought-github')
 import utils
 
 # Ignore warnings
