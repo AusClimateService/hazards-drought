@@ -106,7 +106,7 @@ def load_target_variable(dataset_source, target_variable, ssp, RCM, model, accum
         file_path_base = file_paths['bias-correction']
         files=[]
         cmip6_hist = file_path_base.format(bc,\
-                                            'BOM' if 'BARPA' in RCM else 'CSIRO' if 'CCAM' in RCM else 'NSW-Government' if 'NARCliM' in RCM else 'UQ-DES',\
+                                            'BOM' if 'BARPA' in RCM else 'CSIRO' if 'CCAM' in RCM else 'NSW-Government' if 'NARCliM' in RCM else 'UQ-DEC',\
                                             model,\
                                             'historical',\
                                             data_source['CMIP6'][model]['variant-id'],\
