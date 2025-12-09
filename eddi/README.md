@@ -15,12 +15,14 @@ Input requirements:
 
 ## Installation
 
-Clone the repository and install in editable mode:
-
+Clone the repository:
 ```bash
-git clone <repo_url>
-cd eddi
-pip install -e .
+git clone <repo>
+```
+In your python script/Jupyter notebook:
+```python
+import sys
+sys.path.append("/path/to/eddi-repo")
 ```
 
 ## Usage
