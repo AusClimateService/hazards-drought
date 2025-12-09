@@ -16,6 +16,7 @@ The functions implement equations from:
 
 Allen et al. (2005). FAO Irrigation and Drainage Paper 56:
 Crop Evapotranspiration – Guidelines for Computing Crop Water Requirements.
+https://www.mesonet.org/images/site/ASCE_Evapotranspiration_Formula.pdf
 """
 
 import numpy as np
@@ -23,7 +24,7 @@ import xarray as xr
 
 
 # ---------------------------------------------------------------------------
-# Temperature utilities
+# Utilities
 # ---------------------------------------------------------------------------
 
 def convertTemperature(da):

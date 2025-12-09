@@ -25,7 +25,7 @@ import numpy as np
 import xarray as xr
 from scipy.stats import rankdata
 
-import pet_utils
+import utils
 
 
 # ---------------------------------------------------------------------------
@@ -47,18 +47,18 @@ def compute_daily_FAO56_PET(
     print("----- Start calculation ... -----")
 
     # Convert temperature if needed
-    tasmax = pet_utils.convertTemperature(tasmax)
-    tasmin = pet_utils.convertTemperature(tasmin)
+    tasmax = utils.convertTemperature(tasmax)
+    tasmin = utils.convertTemperature(tasmin)
 
     # Temperature
-    t = pet_utils.meanVar(tasmax, tasmin)
+    t = utils.meanVar(tasmax, tasmin)
 
     # Vapour pressures
-    esat = pet_utils.satVapourPressure(tasmax=tasmax, tasmin=tasmin)
-    ea = pet_utils.actVapourPressure(esat, hurs=hurs)
+    esat = utils.satVapourPressure(tasmax=tasmax, tasmin=tasmin)
+    ea = utils.actVapourPressure(esat, hurs=hurs)
 
     # Pressure [kPa]
-    ps = (pet_utils.convert_sea_level_pressure_to_station_pressure(psl, elev) * 1000)
+    ps = (utils.convert_sea_level_pressure_to_station_pressure(psl, elev) * 1000)
 
     # Slope of vapour pressure curve
     delta = 2503 * np.exp(17.27 * t / (t + 237.3)) / (t + 237.3)**2
@@ -66,7 +66,7 @@ def compute_daily_FAO56_PET(
     # Radiation: downwelling short wave radiation [J/(m2.day)]
     Rs = rsds * 86400 / 1e6 #[MJ/(m2.day)]
 
-    u2 = pet_utils.wind2m(sfcWind)
+    u2 = utils.wind2m(sfcWind)
 
     # Day-of-year for radiation geometry
     jday = xr.DataArray(
@@ -122,7 +122,7 @@ def compute_daily_FAO56_PET(
     Rn = Rns - Rnl
 
     # Final PM equation
-    ET = pet_utils.calculate_FAO56_pmpet(Rn, t, u2, esat, ea, ps, crop)
+    ET = utils.calculate_FAO56_pmpet(Rn, t, u2, esat, ea, ps, crop)
     ET = ET.astype("float32")
 
     # Monthly mean if needed
