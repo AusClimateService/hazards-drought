@@ -27,9 +27,7 @@ sys.path.append("/path/to/eddi-repo")
 
 ## Usage
 ```import xarray as xr
-from eddi.utils import meanVar, satVapourPressure, actVapourPressure
-from eddi.eddi_utils import compute_EDDI
-from eddi.utils import convert_sea_level_pressure_to_station_pressure, calculate_FAO56_pmpet
+from eddi.pet_eddi import compute_daily_FAO56_PET, compute_EDDI
 
 # Load data
 tasmax = xr.open_dataarray("tasmax.nc")
