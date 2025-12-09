@@ -70,8 +70,8 @@ def main(inargs):
 
     RCM = inargs.RCM
     #MPI-ESM1-2-HR // NorESM2-MM for BARPA only and CNRM-ESM2-1 for CCAM only
-    model_list = ['CMCC-ESM2', 'ACCESS-ESM1-5', 'ACCESS-CM2', 'EC-Earth3', 'CESM2'] 
-    model_list = model_list + ['CNRM-ESM2-1'] if RCM == 'CCAM-v2203-SN' else model_list + ['MPI-ESM1-2-HR', 'NorESM2-MM']
+    model_list = ['CMCC-ESM2', 'ACCESS-ESM1-5', 'ACCESS-CM2', 'EC-Earth3', 'CESM2', 'NorESM2-MM'] 
+    model_list = model_list + ['CNRM-ESM2-1'] if RCM == 'CCAM-v2203-SN' else model_list + ['MPI-ESM1-2-HR']
 
     #< Variable for (P)ET component
     if inargs.index == 'atmospheric-based':
@@ -94,7 +94,7 @@ def main(inargs):
             print("Computing annual time series. File: {name}...".format(name=file_name_ann))
         
             # read input data for AI calculation
-            input_array_p = lib_david.load_target_variable('var_p', RCM, model, bc=inargs.bc, bc_method=inargs.bcMethod, bc_source=inargs.bcSource)
+            input_array_p = lib_david.load_target_variable('var_p', RCM, model, bc=inargs.bc, bc_method=inargs.bcMethod, bc_source=inargs.bcSource, start_y = inargs.startYear, end_y = inargs.endYear)
             input_array_e = lib_david.load_target_variable(var_e, RCM, model, bc=inargs.bc, bc_method=inargs.bcMethod, bc_source=inargs.bcSource)
 
             print("================ input_array_p =============")
@@ -119,54 +119,6 @@ def main(inargs):
         else:
             print("{name} exists. Pass.".format(name=file_name_ann))
                         
-    #             for gwl in models_gwl[model][rcp]:
-    #                 print(gwl)
-    #                 syear = str(models_gwl[model][rcp][gwl][0])
-    #                 eyear = str(models_gwl[model][rcp][gwl][1])
-    #                 print(f"Start year for {model}, {rcp}, {gwl}: {syear}")
-    #                 print(f"End year for {model}, {rcp}, {gwl}: {eyear}")
-
-    #                 ###############################  Truncate to annual GWL time series IF previous file exists #############################
-    #                 file_name_ann_gwl = "{}AI-{}_NHP1-AUS-5_{}_{}_{}_{}_{}_{}.nc".format(inargs.OutputDir,inargs.index,model,rcp,run,bc,'annual','GWL'+str(int(float(gwl)*10))) 
-
-    #                 if os.path.exists(file_name_ann_gwl)==False:
-
-    #                     ds_AI_ann_gwl = xr.open_dataset(file_name_ann).sel(time=slice(syear,eyear))
-
-    #                     ds_AI_ann_gwl.attrs['description'] = f'Ratio of precipitation to (potential)evepotranspiration produced from National Hydrological Projections (NHP1.0) on /g/data/wj02/COMPLIANT_PUBLISHED/. Produced for ACS. '
-    #                     ds_AI_ann_gwl.attrs['method']  = 'Using  {} aridity: pr/{}'.format(inargs.index,var_e)
-    #                     ds_AI_ann_gwl.attrs['history'] = cmdprov.new_log(extra_notes=[get_git_hash()])
-    #                     ds_AI_ann_gwl.attrs['comment'] = "Using data on /g/data/wj02/COMPLIANT_PUBLISHED/" ;
-    #                     ds_AI_ann_gwl.attrs['cell_methods'] = "time: mean" ;
-    #                     print("Computing {name}...".format(name=file_name_ann_gwl))
-
-    #                     #< Save output
-    #                     ds_AI_ann_gwl.to_netcdf(file_name_ann_gwl)
-
-    #                 else:
-    #                     print("{name} exists. Pass.".format(name=file_name_ann_gwl))
-
-    #                 ###############################  Create 2D GWL IF time series file exists ############################################
-    #                 file_name_2D_gwl = "{}AI-{}_NHP1-AUS-5_{}_{}_{}_{}_{}_{}.nc".format(inargs.OutputDir,inargs.index,model,rcp,run,bc,'2D','GWL'+str(int(float(gwl)*10)))
-
-    #                 if os.path.exists(file_name_2D_gwl)==False:
-                            
-    #                     ds_AI_2D_gwl = xr.open_dataset(file_name_ann).sel(time=slice(syear,eyear)).mean('time')
-
-    #                     ds_AI_2D_gwl.attrs['description'] = f'Ratio of precipitation to (potential)evepotranspiration produced from National Hydrological Projections (NHP1.0) on /g/data/wj02/COMPLIANT_PUBLISHED/. Produced for ACS. '
-    #                     ds_AI_2D_gwl.attrs['method']  = 'Using  {} aridity: pr/{}'.format(inargs.index,var_e)
-    #                     ds_AI_2D_gwl.attrs['history'] = cmdprov.new_log(extra_notes=[get_git_hash()])
-    #                     ds_AI_2D_gwl.attrs['comment'] = "Using data on /g/data/wj02/COMPLIANT_PUBLISHED/" ;
-    #                     ds_AI_2D_gwl.attrs['cell_methods'] = "time: mean" ;
-    #                     print("Computing {name}...".format(name=file_name_2D_gwl))
-
-    #                     #< Save output
-    #                     ds_AI_2D_gwl.to_netcdf(file_name_2D_gwl)
-    #                 else:
-    #                     print("{name} exists. Pass.".format(name=file_name_2D_gwl))
-
-
-
 
     #< Close the client
     client.close()
@@ -193,6 +145,8 @@ author:
     parser.add_argument("--bcMethod", type=str, default='QME', choices=['QME', 'MRNBE'], help="Choose either 'MRNBC', 'QME'. Default is 'QME'")
     parser.add_argument("--index", type=str, choices=['atmospheric-based','plant-based'], help="Choose either 'atmospheric-based' or 'plant-based' aridity index.")
     parser.add_argument("--outputDir", type=str, default='/g/data/ia39/ncra/drought_aridity/ai/acs_downscaled_notBC_5km/', help="Output directory on Gadi. Default is'/g/data/ia39/ncra/drought_aridity/ai/'")
+    parser.add_argument("--startYear", type=int, default=1960, help="Start year of calculation.")
+    parser.add_argument("--endYear", type=int, default=2100, help="End year of calculation.")
     parser.add_argument("--nworkers", type=int, default=15, help="Number of workers in dask distributed client.")
 
     args = parser.parse_args()

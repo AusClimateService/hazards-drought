@@ -364,6 +364,7 @@ data_source = {
     'AGCD':{'var_p':'precip', 'var_lat':'latitude','var_lon':'longitude'},
     'AWRA':{'var_sm':'s{}', 'var_pet':'e0','var_lat':'latitude','var_lon':'longitude'}, #s0 or ss
     'CMIP6':{'var_tmax':'tasmax','var_tmin':'tasmin','var_p':'pr', 'var_sm':'mrsos', 'var_et':'evspsbl', 'var_pet':'evspsblpot',
+             'var_sphum':'huss','var_swrad':'rsds','var_mpsl':'psl', 'var_wind':'sfcWind', 'var_orog':'orog',
              'var_lat':'lat','var_lon':'lon',
              'CMCC-ESM2':{'variant-id':'r1i1p1f1','version':'v1'}, 
              'ACCESS-ESM1-5':{'variant-id':'r6i1p1f1','version':'v1'},
@@ -380,13 +381,14 @@ data_source = {
 file_paths = {'AGCD': "/g/data/zv2/agcd/v2-0-1/precip/total/r005/01month",
               'AWRA': "/g/data/iu04/australian-water-outlook/historical/v1/AWRALv7",
               'ERA5': "/g/data/zz93/era5-land/reanalysis/{}/{}", #variable #year
-              'BARPA-R': "/g/data/py18/BARPA/output/CMIP6/DD/AUS-15/BOM/{}/{}/{}/BARPA-R/v1-r1/mon/{}/v20231001", #model #hist/ssp #variantid #variable
-              'CCAM-v2203-SN': "/g/data/hq89/CCAM/output/CMIP6/DD/AUS-10i/CSIRO/{}/{}/{}/CCAM-v2203-SN/v1-r1/mon/{}/v20231206", #model #hist/ssp #variantid #variable
+              'BARPA-R': "/g/data/py18/BARPA/output/CMIP6/DD/AUS-15/BOM/{}/{}/{}/BARPA-R/v1-r1/mon/{}/v20231001", 
+              'CCAM-v2203-SN': "/g/data/hq89/CCAM/output/CMIP6/DD/AUS-10i/CSIRO/{}/{}/{}/CCAM-v2203-SN/v1-r1/mon/{}/v20231206",
+              'CCAM-v2112/': "/g/data/ig45/QldFCP-2/output/CMIP6/DD/AUS-10i/UQ-DEC/{}/{}/{}/CCAM-v2105/v1-r1/mon/{}/v20240709",
               'bias-correction': "/g/data/ia39/australian-climate-service/test-data/CORDEX-CMIP6/bias-adjustment-{}/AGCD-05i/{}/{}/{}/{}/{}/{}/day/{}" #output/input #BOM/CSIRO #model #hist/ssp #variantid #RCM #BCdetails #variable
              }
 
 
-def load_target_variable(target_variable, RCM, model, bc=False, bc_method=None, bc_source= None):
+def load_target_variable(target_variable, RCM, model, bc=False, bc_method=None, bc_source= None, start_y = 1960, end_y = 2100):
     """
     Function to create dictionaries with tree structure of period/RCMs/models with relevant target variable grids as dictionary values.
 
@@ -410,14 +412,15 @@ def load_target_variable(target_variable, RCM, model, bc=False, bc_method=None, 
     import xarray as xr
     import glob
 
-    climstart = 1990
-    climend = 2100
+    climstart = start_y
+    climend = end_y
 
     if bc == 'raw':
         file_path_base = file_paths[RCM]
         files=[]
         cmip6_hist = file_path_base.format(model,'historical',data_source['CMIP6'][model]['variant-id'], data_source['CMIP6'][target_variable])
         cmip6_ssp370 = file_path_base.format(model,'ssp370',data_source['CMIP6'][model]['variant-id'], data_source['CMIP6'][target_variable])
+
         for i in range(climstart,climend+1):
             files.extend(sorted(glob.glob("{}/*{}12.nc".format(cmip6_hist, i))))
             files.extend(sorted(glob.glob("{}/*{}12.nc".format(cmip6_ssp370, i))))
