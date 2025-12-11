@@ -21,12 +21,20 @@ https://www.mesonet.org/images/site/ASCE_Evapotranspiration_Formula.pdf
 
 import numpy as np
 import xarray as xr
-
+import git
+import sys
 
 # ---------------------------------------------------------------------------
 # Utilities
 # ---------------------------------------------------------------------------
-
+def get_git_hash():
+    """Returns the git hash for the working repository"""
+    git_repo = git.Repo(sys.argv[0], search_parent_directories=True)
+    git_root = git_repo.git.rev_parse("--show-toplevel")
+    git_hash = git.Repo(git_root).heads[0].commit
+    git_text = " (Git hash: %s)" %(str(git_hash)[0:7])
+    return git_text
+    
 def convertTemperature(da):
     """
     Convert Kelvin to Celsius if necessary.
@@ -38,7 +46,6 @@ def convertTemperature(da):
         return out
     else:
         return da
-
 
 def meanVar(varmax, varmin):
     """
@@ -53,6 +60,17 @@ def meanVar(varmax, varmin):
 
 def satVapourPressure(tasmax=None, tasmin=None, tas=None):
     """
+    Parameters
+    ----------
+    tasmax/tasmin/tas : xarray.DataArray or float [degC]
+
+    Returns
+    -------
+    esat : same type as input
+        Saturation Vapour Pressure in kilo Pascals (kPa)
+
+    Notes
+    -----
     Saturation vapour pressure [esat [kPa] = f(Tmx [degC], Tmn [degC]) using  FAO-56 Chapter 3 - Meteorological Data for formulae, Allen 2005, Equations 6 and 7
     Accepts either tasmax/tasmin or tas.
     """
@@ -71,6 +89,22 @@ def satVapourPressure(tasmax=None, tasmin=None, tas=None):
 def actVapourPressure(esat, psl=None, huss=None, hurs=None,
                       hursmax=None, hursmin=None, tasmax=None, tasmin=None):
     """
+    Parameters
+    ----------
+    esat/psl/huss/hurs/hursmax/hursmin/tasmax/tasmin : xarray.DataArray or float
+ 
+    Returns
+    -------
+    ea : same type as input
+        actual vapour pressure in kilo Pascals (kPa)
+
+    Notes
+    -----
+    Formula from Allen et al., FAO-56 (2005), Eq. 3:
+
+        P = 101.3 * ((293 - 0.0065 * z)/293)^5.26 [kPa]
+
+    Input is in Pa, output is in Pa.
     Actual vapour pressure (ea) using one of the FAO-56 compliant pathways:
 
     - If hurs is provided: ea = RH * esat
@@ -165,13 +199,37 @@ def wind2m(u10):
     return u10 * (4.87 / np.log(67.8 * 10.0 - 5.42))
 
 
-
 # ---------------------------------------------------------------------------
 # FAO-56 PM final equation
 # ---------------------------------------------------------------------------
 
 def calculate_FAO56_pmpet(Rn, t, u2, esat, ea, ps, crop="short"):
     """
+    Parameters
+    ----------
+    Rn : xarray.DataArray or float
+        Net radiation (MJ/(m2.day))
+    t: xarray.DataArray or float
+        2m mean temperature (degC)
+    u2: xarray.DataArray or float
+        2m mean wind speed (m/s)
+    esat: xarray.DataArray or float
+        saturation vapour pressure (kPa)
+    ea: xarray.DataArray or float
+        actual vapour pressure (kPa)
+    ps: xarray.DataArray or float
+        Atmospheric pressure at station elevation (kPa)
+        
+    h_m : xarray.DataArray, float, or int
+        Station elevation in meters
+
+    Returns
+    -------
+    P_station : same type as input
+        Atmospheric pressure at station elevation in Pascals (Pa)
+
+    Notes
+    -----
     Calculate FAO-56 PM reference ET₀ (mm/day).
     Based on Allen et al. (2005) Eq. 6.
 
@@ -200,10 +258,12 @@ def calculate_FAO56_pmpet(Rn, t, u2, esat, ea, ps, crop="short"):
     ET0 = (0.408 * delta * (Rn - G) + gamma * (Cn / (t + 273.)) * u2 * (esat - ea)) / (delta + gamma * (1. + Cd * u2))
 
     # Attributes
-    ET0.attrs.update({"units": "mm day-1",
-                     "long_name": f"FAO-56 {crop} reference crop ET [mm/day]",
-                     "method": "FAO-56 PM according to Allen et al. 2005 (https://www.mesonet.org/images/site/ASCE_Evapotranspiration_Formula.pdf)"
-                    })
+    ET0.attrs.update({"long_name": f"FAO-56 {crop} reference crop ET [mm/day]",
+                       "standard_name": "reference_ET",
+                       "units": "mm day-1",
+                       "cell_methods": "time: mean (interval: 1D)",
+                       "grid_mapping": "crs"}
+                    )
     
     # List of coordinates to drop    
     coords_to_drop = ['height', 'crs', 'level_height', 'model_level_number', 'sigma']

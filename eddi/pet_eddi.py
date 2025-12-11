@@ -19,14 +19,23 @@ This module exposes two main public functions:
 Both functions accept xarray objects and return xarray objects, suitable
 for large gridded datasets (e.g., BARRA, ERA5, ...).
 
-Dependencies: numpy, xarray, scipy (for rankdata)
+Dependencies: numpy, xarray, scipy (for rankdata), cmdline_provenance, sys, git
 """
 
 import numpy as np
 import xarray as xr
 from scipy.stats import rankdata
+import cmdline_provenance as cmdprov
 
 import utils
+
+# Global attributes from BARRA-R2/C2 that must be kept
+barra_glob_attrs = ["axiom_version","axiom_schemas_version","axiom_schema","productive_version",
+              "variable_version","Conventions","activity_id","title","source","project",
+              "program","summary","publisher_institution","processing_level","version_realisation",
+              "institution_id","source_id","driving_variant_label","driving_experiment_id",
+              "driving_institution_id","driving_experiment","driving_source_id","nesting_source_id",
+              "project_id","domain","domain_id","standard_name_vocabulary","tracking"]
 
 
 # ---------------------------------------------------------------------------
@@ -35,10 +44,10 @@ import utils
 
 def compute_daily_FAO56_PET(
     tasmax, tasmin, rsds, hurs, sfcWind, psl, elev,
+    coords=None,
     crop="short",
     freq="day",
-    et_filename="ET0.nc",
-    enc=None,
+    global_attrs=None
 ):
     """
     Compute daily FAO-56 Penman–Monteith ET₀.
@@ -72,8 +81,8 @@ def compute_daily_FAO56_PET(
     # Day-of-year for radiation geometry
     jday = xr.DataArray(
         rsds.time.dt.dayofyear.values,
-        coords=[("day", rsds.time.dt.dayofyear.values)],
-        dims=["day"],
+        coords=[('day', rsds.time.dt.dayofyear.values)],
+        dims=["day"]
     )
 
     Gsc = 4.92 #[MJ/(m2.hr)]
@@ -131,14 +140,16 @@ def compute_daily_FAO56_PET(
         ET = ET.resample(time="ME").mean()
 
     # Metadata
+    my_log = cmdprov.new_log()
+    if global_attrs: 
+        # Replace with the filtered attributes
+        ET.attrs = global_attrs
+        
     ET.attrs.update({
-        "author": "David Hoffmann",
-        "contact": "david.hoffmann@bom.gov.au",
-        "source": "Derived from tasmax, tasmin, rsds, hurs, wind, psl, orog"
+        "description": "FAO-56 crop reference evapotranspiration (ETo) according to Allen et al. 2005 (https://www.mesonet.org/images/site/ASCE_Evapotranspiration_Formula.pdf). Produced by the Australian Climate Service (ACS) Drought and Aridity Hazard Team."
     })
-
-    # Write file if requested
-    ET.to_netcdf(et_filename, encoding=enc or {})
+    ET.attrs.update({'history': f"{cmdprov.new_log()}"})
+    # ET.attrs.update({'history': f"{cmdprov.new_log(extra_notes=[utils.get_git_hash()])} {ET.attrs['history']}"})
 
     return ET
 
@@ -152,7 +163,9 @@ def compute_EDDI(
     ndays,
     compute_categories=True,
     outdir="EDDI_output",
-    filename="EDDI"
+    filename="EDDI",
+    enc = None,
+    global_attrs=None
 ):
     import os
     import numpy as np
@@ -319,18 +332,41 @@ def compute_EDDI(
 
         ed = EDDI.sel(time=str(y)).drop_vars(['year', 'doy'], errors="ignore")
         ed = ed.transpose("time", "lat", "lon")
+        ed.attrs.update({"long_name": "Evapoarative demand drought index",
+                       "standard_name": "EDDI",
+                       "units": "",
+                       "cell_methods": "time: mean (interval: 1D)",
+                       "grid_mapping": "crs"}
+                        )
 
         if compute_categories:
             edc = EDDI_cat.sel(time=str(y)).drop_vars(['year', 'doy'], errors="ignore")
             edc = edc.transpose("time", "lat", "lon")
+            edc.attrs.update({"long_name": "USDM categorised evapoarative demand drought index",
+                       "standard_name": "EDDI_cat",
+                       "units": "",
+                       "cell_methods": "time: mean (interval: 1D)",
+                       "grid_mapping": "crs"}
+                        )
 
             ds_out = xr.Dataset({"EDDI": ed, "EDDI_cat": edc})
         else:
             ds_out = xr.Dataset({"EDDI": ed})
 
-        ds_out.to_netcdf(f"{outdir}/{filename}_{y}.nc")
+        # Metadata
+        my_log = cmdprov.new_log()
+        if global_attrs: 
+            # Replace with the filtered attributes
+            ds_out.attrs = global_attrs
+        
+        ds_out.attrs.update({"description": "Evaporative demand drought index (EDDI, Hobbins et al. 2016, https://doi.org/10.1175/JHM-D-15-0121.1) based on FAO-56 crop reference evapotranspiration (ETo) according to Allen et al. 2005 (https://www.mesonet.org/images/site/ASCE_Evapotranspiration_Formula.pdf). Produced by the Australian Climate Service (ACS) Drought and Aridity Hazard Team."}
+                           )
+        ds_out.attrs.update({'history': f"{cmdprov.new_log()}"})
+        # ds_out.attrs.update({'history': f"{cmdprov.new_log(extra_notes=[utils.get_git_hash()])} {ds_out.attrs['history']}"})
+
+        ds_out.to_netcdf(f"{outdir}/{filename}_{y}.nc", encoding= enc or {})
 
     print("Done.")
 
-    return EDDI
+    return ds_out
 
