@@ -15,6 +15,7 @@ Input requirements for ET₀:
 
 Input requirements for EDDI:
 - ET₀: [mm/day]
+- aggregation window: [days]
 
 ## Installation
 
@@ -42,9 +43,15 @@ psl = xr.open_dataarray("psl.nc")
 elev = xr.open_dataarray("elev.nc")
 
 # Compute daily ET0
-ET0 = compute_daily_FAO56_PET(tasmax, tasmin, rsds, hurs, sfcWind, psl, elev)
+ET0= compute_daily_FAO56_PET(
+            tasmax,tasmin,rsds,
+            hurs,sfcWind,psl,elev
+        )
 
 # Compute EDDI
-EDDI = compute_EDDI(ET0, ndays=30)
+compute_EDDI(
+    ET0,
+    ndays=30
+    )
 ```
 
