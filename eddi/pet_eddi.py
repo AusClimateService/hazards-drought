@@ -48,7 +48,7 @@ def compute_daily_FAO56_PET(
     crop="short",
     freq="day",
     global_attrs=None
-):
+    ):
     """
     Compute daily FAO-56 Penman–Monteith ET₀.
     See documentation inside for a full description.
