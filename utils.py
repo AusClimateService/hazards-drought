@@ -46,7 +46,8 @@ file_paths = {'AGCD': "/g/data/zv2/agcd/v2-0-1/precip/total/r005/01month",
               'CCAM-v2203-SN': "/g/data/hq89/CCAM/output/CMIP6/DD/AUS-10i/CSIRO/{}/{}/{}/CCAM-v2203-SN/v1-r1/mon/{}/v20231206", #model #hist/ssp #variantid #variable
               'NARCliM': "/g/data/zz63/NARCliM2-0/output/CMIP6/DD/AUS-18/NSW-Government/{}/{}/{}/{}/v1-r1/mon/{}/v20240312", #model #hist/ssp #variantid #NARCliM configuration #variable
               'UQ-DES': "/g/data/ig45/QldFCP-2/output/CMIP6/DD/AUS-10i/UQ-DEC/{}/{}/{}/{}/v1-r1/mon/{}/v20240709", #model #hist/ssp #variantid #UQ-DES downscaling RCM #variable
-              'bias-correction': "/g/data/ia39/australian-climate-service/release/CORDEX/output-Adjust/CMIP6/bias-adjusted-{}/AUST-05i/{}/{}/{}/{}/{}/{}/day/{}/v20241216" #output/input #RCM #model #hist/ssp #variantid #RCM #BCdetails #variable
+              'bias-correction_old': "/g/data/ia39/australian-climate-service/release/CORDEX/output-CMIP6/bias-adjusted-{}/AUST-05i/{}/{}/{}/{}/{}/{}/day/{}/v20241216", #output/input #RCM #model #hist/ssp #variantid #RCM #BCdetails #variable
+              'bias-correction_new': "/g/data/kj66/CORDEX/output-CMIP6/bias-adjusted-{}/AUST-05i/{}/{}/{}/{}/{}/{}/day/{}/v20241216" #output/input #RCM #model #hist/ssp #variantid #RCM #BCdetails #variable
              }
 
 
@@ -103,7 +104,7 @@ def load_target_variable(dataset_source, target_variable, ssp, RCM, model, accum
         output_xr = target_period.rolling(time=accumulation, center=False).sum().sel(time=slice(target_period.time[12], None))
     elif dataset_source =='CMIP6' and bc in ['input', 'output']:
         target_variable_key = data_source['CMIP6'][target_variable] if bc == 'input' else data_source['CMIP6'][target_variable]+'Adjust'
-        file_path_base = file_paths['bias-correction']
+        file_path_base = file_paths['bias-correction_old'] if RCM in ['NARCliM2-0-WRF412R3', 'NARCliM2-0-WRF412R5'] else file_paths['bias-correction_new']
         files=[]
         cmip6_hist = file_path_base.format(bc,\
                                             'BOM' if 'BARPA' in RCM else 'CSIRO' if 'CCAM' in RCM else 'NSW-Government' if 'NARCliM' in RCM else 'UQ-DEC',\
@@ -114,10 +115,14 @@ def load_target_variable(dataset_source, target_variable, ssp, RCM, model, accum
                                             'v1-r1' if bc == 'input' else 'v1-r1-ACS-{}-{}-{}-2022'.format(bc_method, bc_source, '1960' if bc_source == 'AGCDv1' else '1980'),
                                             target_variable_key)
         cmip6_ssp = cmip6_hist.replace('historical', ssp)
+        print(cmip6_hist)
+        if RCM == 'UQ-DEC':
+            cmip6_hist = cmip6_hist[:cmip6_hist.find('UQ-DEC', cmip6_hist.find('UQ-DEC')+1)] + 'CCAM-v2112' + cmip6_hist[cmip6_hist.find('UQ-DEC', cmip6_hist.find('UQ-DEC')+1)+len('UQ-DEC'):]
+            cmip6_ssp = cmip6_ssp[:cmip6_ssp.find('UQ-DEC', cmip6_ssp.find('UQ-DEC')+1)] + 'CCAM-v2112' + cmip6_ssp[cmip6_ssp.find('UQ-DEC', cmip6_ssp.find('UQ-DEC')+1)+len('UQ-DEC'):]
+        print(cmip6_hist)
         for i in range(climstart,climend+1):
             files.extend(sorted(glob.glob("{}/*{}".format(cmip6_hist, str(i)+'12.nc' if bc == 'raw' else str(i)+'1231.nc'))))
             files.extend(sorted(glob.glob("{}/*{}".format(cmip6_ssp, str(i)+'12.nc' if bc == 'raw' else str(i)+'1231.nc'))))
-    
         #bc files are of daily frequency - load in and resample to calendar month
         target_period = xr.open_mfdataset(files)[target_variable_key].resample(time='ME').sum()
         # accumulate and write to dictionary
